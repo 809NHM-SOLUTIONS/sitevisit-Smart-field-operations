@@ -37,4 +37,15 @@ public class PaymentReminderController {
         paymentReminderService.checkAndSendReminders();
         return ResponseEntity.ok("Reminder check completed");
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<PaymentReminder> updateReminder(
+            @PathVariable Long id,
+            @RequestBody PaymentReminder reminder) {
+
+        return ResponseEntity.ok(paymentReminderService.updateReminder(id, reminder));
+    }
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleDuplicateReminder(IllegalStateException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

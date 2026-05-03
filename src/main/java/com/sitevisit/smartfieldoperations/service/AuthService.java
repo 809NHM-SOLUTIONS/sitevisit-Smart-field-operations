@@ -48,7 +48,8 @@ public class AuthService {
 
         User user = userOptional.get();
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        // Uses the same saved password until the user changes/resets it
+        if (!passwordEncoder.matches(request.getPassword().trim(), user.getPassword())) {
             return new LoginResponse(false, "Invalid email or password", null, null);
         }
 
@@ -105,7 +106,9 @@ public class AuthService {
             return new ApiResponse(false, "New password is required");
         }
 
-        if (request.getNewPassword().trim().length() < 8) {
+        String newPassword = request.getNewPassword().trim();
+
+        if (newPassword.length() < 8) {
             return new ApiResponse(false, "New password must be at least 8 characters long");
         }
 
@@ -125,15 +128,17 @@ public class AuthService {
 
         User user = resetToken.getUser();
 
-        if (passwordEncoder.matches(request.getNewPassword().trim(), user.getPassword())) {
+        // Prevent reusing the same password during reset
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
             return new ApiResponse(false, "New password must be different from the current password");
         }
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword().trim()));
+        // Password only changes here
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
         passwordResetTokenRepository.delete(resetToken);
 
-        return new ApiResponse(true, "Password reset successful");
+        return new ApiResponse(true, "Password reset successful. Please log in using your new password.");
     }
 }

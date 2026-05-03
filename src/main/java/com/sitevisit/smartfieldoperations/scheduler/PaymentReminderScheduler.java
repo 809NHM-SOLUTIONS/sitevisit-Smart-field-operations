@@ -14,7 +14,7 @@ public class PaymentReminderScheduler {
     }
 
     @Scheduled(cron = "0 0 8 * * *")
-    public void runPaymentReminderCheck() {
+    public void runDailyReminderCheck() {
         paymentReminderService.checkAndSendReminders();
     }
 }

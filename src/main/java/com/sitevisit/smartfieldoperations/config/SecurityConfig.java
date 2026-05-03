@@ -35,7 +35,9 @@ public class SecurityConfig {
                                 "/api/companies/**",
                                 "/api/members/**",
                                 "/api/reports/**",
-                                "/api/payment-reminders/**"
+                                "/api/site-visit-reminders/**",
+                                "/api/payment-reminders/**",
+                                "/api/notifications/**"
                         ).permitAll()
                         .anyRequest().permitAll()
                 )

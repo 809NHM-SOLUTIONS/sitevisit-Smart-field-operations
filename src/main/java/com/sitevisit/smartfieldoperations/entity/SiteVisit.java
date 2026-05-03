@@ -16,7 +16,8 @@ public class SiteVisit {
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
-
+    private LocalDate lastReminderSentDate;
+    private boolean checkedIn = false;
     private LocalDate visitDate;
     private LocalTime visitTime;
 
@@ -51,6 +52,14 @@ public class SiteVisit {
     public LocalTime getVisitTime() {
         return visitTime;
     }
+
+    public LocalDate getLastReminderSentDate() { return lastReminderSentDate; }
+
+    public void setLastReminderSentDate(LocalDate lastReminderSentDate) {this.lastReminderSentDate = lastReminderSentDate;}
+
+    public boolean isCheckedIn() {return checkedIn;}
+
+    public void setCheckedIn(boolean checkedIn) { this.checkedIn = checkedIn;}
 
     public void setVisitTime(LocalTime visitTime) {
         this.visitTime = visitTime;

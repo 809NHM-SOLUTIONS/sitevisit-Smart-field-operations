@@ -4,8 +4,8 @@ import com.sitevisit.smartfieldoperations.entity.Company;
 import com.sitevisit.smartfieldoperations.entity.SiteVisit;
 import com.sitevisit.smartfieldoperations.repository.CompanyRepository;
 import com.sitevisit.smartfieldoperations.repository.SiteVisitRepository;
+import com.sitevisit.smartfieldoperations.service.NotificationService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -14,11 +14,16 @@ public class SiteVisitController {
 
     private final SiteVisitRepository siteVisitRepository;
     private final CompanyRepository companyRepository;
+    private final NotificationService notificationService;
 
-    public SiteVisitController(SiteVisitRepository siteVisitRepository, CompanyRepository companyRepository) {
+    public SiteVisitController(SiteVisitRepository siteVisitRepository,
+                               CompanyRepository companyRepository,
+                               NotificationService notificationService) {
         this.siteVisitRepository = siteVisitRepository;
         this.companyRepository = companyRepository;
+        this.notificationService = notificationService;
     }
+
     @PostMapping("/site-visits/save")
     public String saveSiteVisit(@RequestParam Long companyId,
                                 @RequestParam String visitDate,
@@ -35,12 +40,21 @@ public class SiteVisitController {
         siteVisit.setVisitTime(java.time.LocalTime.parse(visitTime));
         siteVisit.setStatus("Scheduled");
         siteVisit.setNotes(notes);
+        siteVisit.setCheckedIn(false);
 
         siteVisitRepository.save(siteVisit);
+
+        notificationService.createNotification(
+                "New site visit scheduled with " + company.getName()
+                        + " on " + siteVisit.getVisitDate()
+                        + " at " + siteVisit.getVisitTime(),
+                "SITE_VISIT_SCHEDULED"
+        );
 
         redirectAttributes.addFlashAttribute("successMessage", "Site visit scheduled successfully.");
         return "redirect:/site-visits";
     }
+
     @PostMapping("/site-visits/update-status/{id}")
     @ResponseBody
     public java.util.Map<String, Object> updateVisitStatus(@PathVariable Long id,
@@ -52,6 +66,11 @@ public class SiteVisitController {
                     .orElseThrow(() -> new RuntimeException("Site visit not found"));
 
             visit.setStatus(status);
+
+            if (status.equalsIgnoreCase("In Progress") || status.equalsIgnoreCase("Checked In")) {
+                visit.setCheckedIn(true);
+            }
+
             siteVisitRepository.save(visit);
 
             response.put("success", true);

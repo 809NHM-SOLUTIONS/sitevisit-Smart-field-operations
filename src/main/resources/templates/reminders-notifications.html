@@ -27,7 +27,7 @@
                 <a href="/members">Member Management</a>
                 <a href="/site-visits">Site Visits</a>
                 <a href="/reports">Reports</a>
-                <a href="/reminders-notifications" class="active">Reminders & Notifications</a>
+                <a href="/reminders-notifications" class="active">Reminders&Notifications</a>
                 <a href="/profile">Profile</a>
                 <a href="/login">Logout</a>
             </nav>
@@ -40,13 +40,31 @@
                     <h2>Reminders & Notifications</h2>
                     <p>Create stipend payment reminders and track payment status.</p>
                 </div>
+
+                <div class="notification-bell" onclick="toggleNotifications()">
+                    🔔 <span id="notif-count">0</span>
+                </div>
             </div>
 
+            <!-- NOTIFICATION PANEL -->
+            <div id="notification-panel" class="panel hidden">
+                <div class="panel-header">
+                    <h3>Notifications</h3>
+                </div>
+
+                <ul id="notification-list" class="notification-list">
+                    <li class="notification">
+                        <p>Loading notifications...</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PAYMENT REMINDER SECTION -->
             <div class="dashboard-grid" style="grid-template-columns: 1fr 1.3fr; gap: 24px;">
 
                 <div class="panel">
                     <div class="panel-header">
-                        <h3>Add Stipend Payment Reminder</h3>
+                        <h3>Monthly Payment Reminder</h3>
                     </div>
 
                     <form id="paymentReminderForm">
@@ -62,7 +80,7 @@
 
                         <div class="form-group">
                             <label>Recipient Email</label>
-                            <input type="email" id="recipientEmail" class="form-input" placeholder="Enter email" required>
+                            <input type="hidden" id="recipientEmail" th:value="${email}">
                         </div>
 
                         <div class="form-group">
@@ -70,10 +88,17 @@
                             <textarea id="message" class="form-input" rows="5" placeholder="Enter reminder message"></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
+                        <input type="hidden" id="editingReminderId">
+
+                        <button type="submit" class="btn btn-primary" id="saveReminderBtn">
                             Save Reminder
                         </button>
+
+                        <button type="button" class="btn small-btn" id="cancelEditBtn" style="display:none;" onclick="cancelEdit()">
+                            Cancel Edit
+                        </button>
                     </form>
+
                 </div>
 
                 <div class="panel large-panel">
@@ -104,12 +129,46 @@
                 </div>
 
             </div>
+            <!-- SITE VISIT NOTIFICATIONS SECTION -->
+            <div class="panel large-panel" style="margin-top: 24px;">
+                <div class="panel-header">
+                    <h3>Site Visit Notifications</h3>
+                    <button class="btn btn-primary small-btn" onclick="sendSiteVisitReminderCheckNow()">
+                        Check Site Visit Reminders
+                    </button>
+                </div>
 
+                <p style="margin-bottom: 15px; color: #666;">
+                    Site visit reminders are created automatically from scheduled site visits.
+                    Once a visit is checked in, reminders will stop.
+                </p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Visit Date</th>
+                            <th>Visit Time</th>
+                            <th>Status</th>
+                            <th>Last Reminder</th>
+                        </tr>
+                        </thead>
+                        <tbody id="siteVisitReminderTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center;">Loading site visit reminders...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </div>
 </section>
 
 <script src="/js/payment-reminders.js"></script>
+<script src="/js/notifications.js"></script>
+<script src="/js/site-visit-reminders.js"></script>
 
 </body>
 </html>

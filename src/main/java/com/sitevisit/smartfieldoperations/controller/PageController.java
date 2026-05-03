@@ -146,6 +146,8 @@ public class PageController {
         if (user == null) return "redirect:/login";
 
         addUserToModel(model, user);
+        model.addAttribute("email", user.getEmail());
+
         return "reminders-notifications";
     }
 }
