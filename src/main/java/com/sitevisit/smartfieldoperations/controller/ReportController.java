@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletResponse;
+import com.sitevisit.smartfieldoperations.service.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
@@ -21,21 +22,36 @@ public class ReportController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
     private final ReportRepository reportRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    public ReportController(ReportRepository reportRepository) {
+    public ReportController(ReportRepository reportRepository,
+                            NotificationService notificationService) {
         this.reportRepository = reportRepository;
+        this.notificationService = notificationService;
     }
+
 
     @PostMapping
     public ResponseEntity<Report> createReport(@RequestBody Report report) {
         try {
             logger.info("📝 Creating report: title='{}'", report.getTitle());
-            if (report.getUpdatedAt() == null) report.setUpdatedAt(LocalDateTime.now());
-            
+
+            if (report.getUpdatedAt() == null)
+                report.setUpdatedAt(LocalDateTime.now());
+
             Report saved = reportRepository.save(report);
+
+            // ✅ ADD THIS (notification)
+            notificationService.createNotification(
+                    "New report submitted: " + saved.getTitle(),
+                    "REPORT",
+                    "/reports/" + saved.getId()
+            );
+
             logger.info("✅ Saved report ID: {}", saved.getId());
             return ResponseEntity.ok(saved);
+
         } catch (Exception e) {
             logger.error("❌ Failed to create report", e);
             return ResponseEntity.internalServerError().build();

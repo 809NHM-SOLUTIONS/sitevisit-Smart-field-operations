@@ -4,34 +4,39 @@ import com.sitevisit.smartfieldoperations.entity.Notification;
 import com.sitevisit.smartfieldoperations.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class NotificationService {
 
-    private final NotificationRepository notificationRepository;
+    private final NotificationRepository repository;
 
-    public NotificationService(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
+    public NotificationService(NotificationRepository repository) {
+        this.repository = repository;
     }
 
-    // CREATE notification
-    public Notification createNotification(String message, String type) {
-        Notification notification = new Notification(message, type);
-        return notificationRepository.save(notification);
-    }
-
-    // GET all notifications (LATEST FIRST 🔥)
+    // ✅ FIXED: sorted newest first
     public List<Notification> getAllNotifications() {
-        return notificationRepository.findAllByOrderByCreatedAtDesc();
+        return repository.findAllByOrderByCreatedAtDesc();
     }
 
-    // MARK AS READ
+    public void createNotification(String message, String type, String link) {
+        Notification notification = new Notification();
+        notification.setMessage(message);
+        notification.setType(type);
+        notification.setLink(link);
+        notification.setRead(false);
+        notification.setCreatedAt(LocalDateTime.now());
+
+        repository.save(notification);
+    }
+
     public void markAsRead(Long id) {
-        Notification notification = notificationRepository.findById(id)
+        Notification notification = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
 
         notification.setRead(true);
-        notificationRepository.save(notification);
+        repository.save(notification);
     }
 }

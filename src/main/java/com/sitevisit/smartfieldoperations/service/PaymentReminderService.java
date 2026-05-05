@@ -22,48 +22,62 @@ public class PaymentReminderService {
         this.notificationService = notificationService;
     }
 
+    // 🔹 GET ALL REMINDERS
     public List<PaymentReminder> getAllReminders() {
         return paymentReminderRepository.findAll();
     }
 
+    // 🔹 CREATE REMINDER
     public PaymentReminder createReminder(PaymentReminder reminder) {
 
+        // ❌ OPTIONAL: Remove this if you want multiple reminders
         if (!paymentReminderRepository.findAll().isEmpty()) {
-            throw new IllegalStateException("You already have a payment reminder. Edit it instead.");        }
+            throw new IllegalStateException("You already have a payment reminder. Edit it instead.");
+        }
 
         reminder.setPaid(false);
 
         PaymentReminder savedReminder = paymentReminderRepository.save(reminder);
 
+        // 🔔 Notification with link
         notificationService.createNotification(
                 "New stipend payment reminder created: " + savedReminder.getTitle(),
-                "PAYMENT_REMINDER"
+                "PAYMENT_REMINDER",
+                "/reminders-notifications"
         );
 
         return savedReminder;
     }
 
+    // 🔹 MARK AS PAID (FIXED)
     public PaymentReminder markAsPaid(Long id) {
         PaymentReminder reminder = paymentReminderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment reminder not found"));
 
         LocalDate today = LocalDate.now();
 
-        reminder.setPaid(false); // keep reminder active for next month
+        // ✅ FIX: mark as paid
+        reminder.setPaid(true);
         reminder.setPaidDate(today);
+
+        // 🔁 move to next month
         reminder.setPaymentDate(reminder.getPaymentDate().plusMonths(1));
+
+        // reset reminder tracking
         reminder.setLastReminderSentDate(null);
 
         PaymentReminder savedReminder = paymentReminderRepository.save(reminder);
 
         notificationService.createNotification(
                 "Payment marked as paid. Next reminder scheduled for: " + savedReminder.getPaymentDate(),
-                "PAYMENT_PAID"
+                "PAYMENT_PAID",
+                "/reminders-notifications"
         );
 
         return savedReminder;
     }
 
+    // 🔹 CHECK + SEND REMINDERS (CORE LOGIC)
     public void checkAndSendReminders() {
         LocalDate today = LocalDate.now();
         LocalDate fourDaysFromNow = today.plusDays(4);
@@ -101,23 +115,28 @@ public class PaymentReminderService {
                     message += "\n\nNote: " + reminder.getMessage();
                 }
 
+                // 📧 SEND EMAIL
                 emailService.sendEmail(
                         reminder.getRecipientEmail(),
                         subject,
                         message
                 );
 
+                // 🔔 CREATE NOTIFICATION WITH LINK
                 notificationService.createNotification(
                         "Payment Reminder: " + reminder.getTitle() + " (" + reminder.getPaymentDate() + ")",
-                        overdue ? "PAYMENT_OVERDUE" : "PAYMENT_REMINDER"
+                        overdue ? "PAYMENT_OVERDUE" : "PAYMENT_REMINDER",
+                        "/reminders-notifications"
                 );
 
-
+                // update last sent date
                 reminder.setLastReminderSentDate(today);
                 paymentReminderRepository.save(reminder);
             }
         }
     }
+
+    // 🔹 UPDATE REMINDER
     public PaymentReminder updateReminder(Long id, PaymentReminder updatedReminder) {
         PaymentReminder existingReminder = paymentReminderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment reminder not found"));
@@ -130,7 +149,8 @@ public class PaymentReminderService {
 
         notificationService.createNotification(
                 "Payment reminder updated: " + savedReminder.getTitle(),
-                "PAYMENT_UPDATED"
+                "PAYMENT_UPDATED",
+                "/reminders-notifications"
         );
 
         return savedReminder;

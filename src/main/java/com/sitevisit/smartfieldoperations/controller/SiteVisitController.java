@@ -48,7 +48,8 @@ public class SiteVisitController {
                 "New site visit scheduled with " + company.getName()
                         + " on " + siteVisit.getVisitDate()
                         + " at " + siteVisit.getVisitTime(),
-                "SITE_VISIT_SCHEDULED"
+                "SITE_VISIT_SCHEDULED",
+                "/site-visits"
         );
 
         redirectAttributes.addFlashAttribute("successMessage", "Site visit scheduled successfully.");
