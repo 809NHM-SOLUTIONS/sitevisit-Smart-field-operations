@@ -2,27 +2,40 @@ package com.sitevisit.smartfieldoperations.dto;
 
 public class ResetPasswordRequest {
 
-    private String token;
+    private String email;
+    private String otp;
     private String newPassword;
 
     public ResetPasswordRequest() {
     }
 
-    public ResetPasswordRequest(String token, String newPassword) {
-        this.token = token;
+    public ResetPasswordRequest(String email,
+                                String otp,
+                                String newPassword) {
+
+        this.email = email;
+        this.otp = otp;
         this.newPassword = newPassword;
     }
 
-    public String getToken() {
-        return token;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getOtp() {
+        return otp;
     }
 
     public String getNewPassword() {
         return newPassword;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 
     public void setNewPassword(String newPassword) {

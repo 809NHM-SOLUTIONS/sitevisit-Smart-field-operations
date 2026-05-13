@@ -33,28 +33,61 @@ public class ReportController {
 
 
     @PostMapping
-    public ResponseEntity<Report> createReport(@RequestBody Report report) {
+    public ResponseEntity<Report> createReport(
+            @RequestBody Report report,
+            jakarta.servlet.http.HttpSession session
+    ) {
+
         try {
-            logger.info("📝 Creating report: title='{}'", report.getTitle());
 
-            if (report.getUpdatedAt() == null)
-                report.setUpdatedAt(LocalDateTime.now());
-
-            Report saved = reportRepository.save(report);
-
-            // ✅ ADD THIS (notification)
-            notificationService.createNotification(
-                    "New report submitted: " + saved.getTitle(),
-                    "REPORT",
-                    "/reports/" + saved.getId()
+            logger.info(
+                    "📝 Creating report: title='{}'",
+                    report.getTitle()
             );
 
-            logger.info("✅ Saved report ID: {}", saved.getId());
+            if (report.getUpdatedAt() == null) {
+                report.setUpdatedAt(LocalDateTime.now());
+            }
+
+            Report saved =
+                    reportRepository.save(report);
+
+            // LOGGED-IN USER EMAIL
+            String userEmail =
+                    (String) session.getAttribute(
+                            "loggedInUserEmail"
+                    );
+
+            // NOTIFICATION + EMAIL
+            notificationService.createNotification(
+                    "New report submitted: "
+                            + saved.getTitle(),
+
+                    "REPORT_SUBMITTED",
+
+                    "/reports",
+
+                    userEmail,
+
+                    "New Report Submitted"
+            );
+            logger.info(
+                    "✅ Saved report ID: {}",
+                    saved.getId()
+            );
+
             return ResponseEntity.ok(saved);
 
         } catch (Exception e) {
-            logger.error("❌ Failed to create report", e);
-            return ResponseEntity.internalServerError().build();
+
+            logger.error(
+                    "❌ Failed to create report",
+                    e
+            );
+
+            return ResponseEntity
+                    .internalServerError()
+                    .build();
         }
     }
 

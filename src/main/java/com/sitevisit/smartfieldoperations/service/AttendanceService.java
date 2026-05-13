@@ -36,27 +36,7 @@ public class AttendanceService {
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
 
-        // ❌ BEFORE DATE
-        if (today.isBefore(siteVisit.getVisitDate())) {
-            return new ApiResponse(false, "You cannot check in before the scheduled date.");
-        }
-
-        // ❌ AFTER DATE
-        if (today.isAfter(siteVisit.getVisitDate())) {
-            return new ApiResponse(false, "This visit has already passed.");
-        }
-
-        // ❌ BEFORE TIME (same day)
-        if (today.equals(siteVisit.getVisitDate()) && now.isBefore(siteVisit.getVisitTime())) {
-            return new ApiResponse(false, "You cannot check in before the scheduled time.");
-        }
-
-        // OPTIONAL: prevent very late check-in (e.g. 2+ hours later)
-        if (today.equals(siteVisit.getVisitDate()) && now.isAfter(siteVisit.getVisitTime().plusHours(2))) {
-            return new ApiResponse(false, "Check-in time window has expired.");
-        }
-
-        // existing logic
+        // ✅ ONLY keep important validation
         Optional<Attendance> existingAttendance = attendanceRepository.findBySiteVisitId(siteVisitId);
         if (existingAttendance.isPresent()) {
             return new ApiResponse(false, "Already checked in.");
@@ -92,12 +72,7 @@ public class AttendanceService {
         SiteVisit visit = siteVisitRepository.findById(siteVisitId)
                 .orElseThrow(() -> new RuntimeException("Site visit not found"));
 
-        LocalDate today = LocalDate.now();
-
-        // ❌ Prevent checkout on wrong day
-        if (!today.equals(visit.getVisitDate())) {
-            return new ApiResponse(false, "You can only check out on the visit date.");
-        }
+        // ❌ REMOVED DATE RESTRICTION HERE
 
         attendance.setCheckOutTime(LocalTime.now());
         attendance.setStatus("Completed");

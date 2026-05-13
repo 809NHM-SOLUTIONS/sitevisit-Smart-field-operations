@@ -2,6 +2,8 @@ package com.sitevisit.smartfieldoperations.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -22,6 +24,14 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    // ================= OTP RESET FIELDS =================
+
+    private String otp;
+
+    private LocalDateTime otpExpiry;
+
+    // ====================================================
+
     public User() {
     }
 
@@ -31,6 +41,8 @@ public class User {
         this.password = password;
         this.role = role;
     }
+
+    // ================= GETTERS =================
 
     public Long getId() {
         return id;
@@ -52,6 +64,16 @@ public class User {
         return role;
     }
 
+    public String getOtp() {
+        return otp;
+    }
+
+    public LocalDateTime getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    // ================= SETTERS =================
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -70,5 +92,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public void setOtpExpiry(LocalDateTime otpExpiry) {
+        this.otpExpiry = otpExpiry;
     }
 }

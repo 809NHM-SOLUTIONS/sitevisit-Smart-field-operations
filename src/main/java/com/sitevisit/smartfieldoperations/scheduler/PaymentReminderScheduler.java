@@ -9,12 +9,23 @@ public class PaymentReminderScheduler {
 
     private final PaymentReminderService paymentReminderService;
 
-    public PaymentReminderScheduler(PaymentReminderService paymentReminderService) {
-        this.paymentReminderService = paymentReminderService;
+    public PaymentReminderScheduler(
+            PaymentReminderService paymentReminderService
+    ) {
+        this.paymentReminderService =
+                paymentReminderService;
     }
 
+    // Runs every day at 08:00 AM
     @Scheduled(cron = "0 0 8 * * *")
     public void runDailyReminderCheck() {
-        paymentReminderService.checkAndSendReminders();
+
+        // SYSTEM EMAIL
+        String systemEmail =
+                "nommypre@gmail.com";
+
+        paymentReminderService.checkAndSendReminders(
+                systemEmail
+        );
     }
 }

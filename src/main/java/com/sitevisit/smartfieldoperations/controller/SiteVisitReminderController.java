@@ -17,32 +17,51 @@ public class SiteVisitReminderController {
     private final SiteVisitRepository siteVisitRepository;
     private final SiteVisitReminderService siteVisitReminderService;
 
-    public SiteVisitReminderController(SiteVisitRepository siteVisitRepository,
-                                       SiteVisitReminderService siteVisitReminderService) {
+    public SiteVisitReminderController(
+            SiteVisitRepository siteVisitRepository,
+            SiteVisitReminderService siteVisitReminderService
+    ) {
         this.siteVisitRepository = siteVisitRepository;
         this.siteVisitReminderService = siteVisitReminderService;
     }
 
     @GetMapping
-    public ResponseEntity<List<SiteVisit>> getUpcomingSiteVisitReminders() {
+    public ResponseEntity<List<SiteVisit>>
+    getUpcomingSiteVisitReminders() {
+
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
 
         return ResponseEntity.ok(
-                siteVisitRepository.findByVisitDateBetweenAndCheckedInFalse(today, tomorrow)
+                siteVisitRepository
+                        .findByVisitDateBetweenAndCheckedInFalse(
+                                today,
+                                tomorrow
+                        )
         );
     }
 
     @PostMapping("/send-now")
-    public ResponseEntity<String> sendNow(HttpSession session) {
-        String email = (String) session.getAttribute("loggedInUserEmail");
+    public ResponseEntity<String> sendNow(
+            HttpSession session
+    ) {
+
+        String email =
+                (String) session.getAttribute(
+                        "loggedInUserEmail"
+                );
 
         if (email == null || email.isBlank()) {
-            return ResponseEntity.badRequest().body("No logged-in user email found.");
+
+            return ResponseEntity.badRequest()
+                    .body("No logged-in user email found.");
         }
 
-        siteVisitReminderService.checkAndSendSiteVisitReminders(email);
+        siteVisitReminderService
+                .checkAndSendSiteVisitReminders(email);
 
-        return ResponseEntity.ok("Site visit reminder check completed");
+        return ResponseEntity.ok(
+                "Site visit reminder emails sent."
+        );
     }
 }

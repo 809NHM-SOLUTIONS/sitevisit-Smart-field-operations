@@ -69,9 +69,16 @@ public class SiteVisitReminderService {
 
                 notificationService.createNotification(
                         "Site Visit Reminder: " + companyName + " ("
-                                + visit.getVisitDate() + " " + visit.getVisitTime() + ")",
+                                + visit.getVisitDate() + " "
+                                + visit.getVisitTime() + ")",
+
                         "SITE_VISIT_REMINDER",
-                        "/site-visits/" + visit.getId()
+
+                        "/site-visits/" + visit.getId(),
+
+                        userEmail,
+
+                        "Upcoming Site Visit Reminder"
                 );
 
                 visit.setLastReminderSentDate(today);

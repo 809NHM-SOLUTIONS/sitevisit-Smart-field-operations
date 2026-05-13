@@ -14,11 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const reminder = {
                 title: document.getElementById("title").value.trim(),
                 paymentDate: document.getElementById("paymentDate").value,
-                recipientEmail: document.getElementById("recipientEmail").value.trim(),
                 message: document.getElementById("message").value.trim()
             };
 
-            if (!reminder.title || !reminder.paymentDate || !reminder.recipientEmail) {
+            if (!reminder.title || !reminder.paymentDate) {
                 alert("Please fill in title and payment date.");
                 return;
             }
@@ -93,20 +92,19 @@ async function fetchPaymentReminders() {
             const status = getReminderStatus(reminder);
 
             row.innerHTML = `
-                <td>${escapeHtml(reminder.title)}</td>
-                <td>${reminder.paymentDate || "-"}</td>
-                <td>${escapeHtml(reminder.recipientEmail)}</td>
-                <td>${status}</td>
-                <td>${reminder.lastReminderSentDate || "-"}</td>
-                <td>
-                    <button class="btn small-btn" onclick='editReminder(${JSON.stringify(reminder)})'>Edit</button>
-                    ${
-                reminder.paid
-                    ? `<span class="status completed">Paid</span>`
-                    : `<button class="btn btn-primary small-btn" onclick="markAsPaid(${reminder.id})">Mark as Paid</button>`
-            }
-                </td>
-            `;
+            <td>${escapeHtml(reminder.title)}</td>
+            <td>${reminder.paymentDate || "-"}</td>
+            <td>${status}</td>
+            <td>${reminder.lastReminderSentDate || "-"}</td>
+            <td>
+                <button class="btn small-btn" onclick='editReminder(${JSON.stringify(reminder)})'>Edit</button>
+                ${
+                        reminder.paid
+                            ? `<span class="status completed">Paid</span>`
+                            : `<button class="btn btn-primary small-btn" onclick="markAsPaid(${reminder.id})">Mark as Paid</button>`
+                    }
+            </td>
+        `;
 
             tbody.appendChild(row);
         });
@@ -115,7 +113,7 @@ async function fetchPaymentReminders() {
         console.error(error);
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align:center; color:red;">Failed to load reminders.</td>
+                <td colspan="5" style="text-align:center; color:red;">Failed to load reminders.</td>
             </tr>
         `;
     }
@@ -126,7 +124,6 @@ function editReminder(reminder) {
     document.getElementById("title").value = reminder.title || "";
     document.getElementById("paymentDate").value = reminder.paymentDate || "";
     document.getElementById("message").value = reminder.message || "";
-
     document.getElementById("saveReminderBtn").textContent = "Update Reminder";
     document.getElementById("cancelEditBtn").style.display = "inline-block";
 

@@ -5,30 +5,29 @@ import com.sitevisit.smartfieldoperations.dto.ForgotPasswordRequest;
 import com.sitevisit.smartfieldoperations.dto.LoginRequest;
 import com.sitevisit.smartfieldoperations.dto.LoginResponse;
 import com.sitevisit.smartfieldoperations.dto.ResetPasswordRequest;
-import com.sitevisit.smartfieldoperations.entity.PasswordResetToken;
 import com.sitevisit.smartfieldoperations.entity.User;
-import com.sitevisit.smartfieldoperations.repository.PasswordResetTokenRepository;
 import com.sitevisit.smartfieldoperations.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
 
     public AuthService(UserRepository userRepository,
-                       PasswordResetTokenRepository passwordResetTokenRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       JavaMailSender mailSender) {
+
         this.userRepository = userRepository;
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -62,83 +61,141 @@ public class AuthService {
     }
 
     public ApiResponse forgotPassword(ForgotPasswordRequest request) {
-        if (request == null || request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+
+        if (request == null ||
+                request.getEmail() == null ||
+                request.getEmail().trim().isEmpty()) {
+
             return new ApiResponse(false, "Email is required");
         }
 
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail().trim());
+        Optional<User> optionalUser =
+                userRepository.findByEmail(request.getEmail().trim());
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+        if (optionalUser.isEmpty()) {
+            return new ApiResponse(false,
+                    "No account found with that email");
+        }
 
-            passwordResetTokenRepository.findByUser(user)
-                    .ifPresent(passwordResetTokenRepository::delete);
+        User user = optionalUser.get();
 
-            String token = UUID.randomUUID().toString();
-            LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(15);
+        // Generate OTP
+        String otp = String.valueOf(
+                (int)((Math.random() * 900000) + 100000)
+        );
 
-            PasswordResetToken resetToken = new PasswordResetToken();
-            resetToken.setToken(token);
-            resetToken.setUser(user);
-            resetToken.setExpiryDate(expiryDate);
+        // Save OTP
+        user.setOtp(otp);
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
 
-            passwordResetTokenRepository.save(resetToken);
+        userRepository.save(user);
+
+        try {
+
+            // Create Email
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setTo(user.getEmail());
+
+            message.setSubject("Password Reset OTP");
+
+            message.setText(
+                    "Hello " + user.getFullName() + ",\n\n" +
+                            "Your OTP is: " + otp + "\n\n" +
+                            "This OTP expires in 10 minutes.\n\n" +
+                            "SiteVisit System"
+            );
+
+            // SEND EMAIL
+            mailSender.send(message);
+
+            System.out.println("OTP SENT SUCCESSFULLY");
 
             return new ApiResponse(
                     true,
-                    "If the account exists, a reset token has been generated.",
-                    token
+                    "OTP sent successfully"
+            );
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return new ApiResponse(
+                    false,
+                    "Failed to send OTP email"
             );
         }
-
-        return new ApiResponse(
-                true,
-                "If the account exists, a reset token has been generated."
-        );
     }
 
     public ApiResponse resetPassword(ResetPasswordRequest request) {
-        if (request == null || request.getToken() == null || request.getToken().trim().isEmpty()) {
-            return new ApiResponse(false, "Reset token is required");
+
+        if (request == null ||
+                request.getEmail() == null ||
+                request.getEmail().trim().isEmpty()) {
+
+            return new ApiResponse(false, "Email is required");
         }
 
-        if (request.getNewPassword() == null || request.getNewPassword().trim().isEmpty()) {
+        if (request.getOtp() == null ||
+                request.getOtp().trim().isEmpty()) {
+
+            return new ApiResponse(false, "OTP is required");
+        }
+
+        if (request.getNewPassword() == null ||
+                request.getNewPassword().trim().isEmpty()) {
+
             return new ApiResponse(false, "New password is required");
+        }
+
+        Optional<User> optionalUser =
+                userRepository.findByEmail(request.getEmail().trim());
+
+        if (optionalUser.isEmpty()) {
+            return new ApiResponse(false, "User not found");
+        }
+
+        User user = optionalUser.get();
+
+        // Validate OTP
+        if (user.getOtp() == null ||
+                !user.getOtp().equals(request.getOtp().trim())) {
+
+            return new ApiResponse(false, "Invalid OTP");
+        }
+
+        // Check OTP expiry
+        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
+
+            return new ApiResponse(false, "OTP has expired");
         }
 
         String newPassword = request.getNewPassword().trim();
 
         if (newPassword.length() < 8) {
-            return new ApiResponse(false, "New password must be at least 8 characters long");
+            return new ApiResponse(false,
+                    "Password must be at least 8 characters");
         }
 
-        Optional<PasswordResetToken> tokenOptional =
-                passwordResetTokenRepository.findByToken(request.getToken().trim());
-
-        if (tokenOptional.isEmpty()) {
-            return new ApiResponse(false, "Invalid or expired token");
-        }
-
-        PasswordResetToken resetToken = tokenOptional.get();
-
-        if (resetToken.isExpired()) {
-            passwordResetTokenRepository.delete(resetToken);
-            return new ApiResponse(false, "Invalid or expired token");
-        }
-
-        User user = resetToken.getUser();
-
-        // Prevent reusing the same password during reset
+        // Prevent same password reuse
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
-            return new ApiResponse(false, "New password must be different from the current password");
+
+            return new ApiResponse(false,
+                    "New password must be different from current password");
         }
 
-        // Password only changes here
+        // Save new password
         user.setPassword(passwordEncoder.encode(newPassword));
+
+        // Clear OTP
+        user.setOtp(null);
+        user.setOtpExpiry(null);
+
         userRepository.save(user);
 
-        passwordResetTokenRepository.delete(resetToken);
-
-        return new ApiResponse(true, "Password reset successful. Please log in using your new password.");
+        return new ApiResponse(
+                true,
+                "Password reset successful"
+        );
     }
 }

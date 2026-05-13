@@ -11,18 +11,32 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository repository;
+    private final EmailService emailService;
 
-    public NotificationService(NotificationRepository repository) {
+    public NotificationService(
+            NotificationRepository repository,
+            EmailService emailService
+    ) {
         this.repository = repository;
+        this.emailService = emailService;
     }
 
-    // ✅ FIXED: sorted newest first
+    // newest first
     public List<Notification> getAllNotifications() {
         return repository.findAllByOrderByCreatedAtDesc();
     }
 
-    public void createNotification(String message, String type, String link) {
+    // CREATE NOTIFICATION + SEND EMAIL
+    public void createNotification(
+            String message,
+            String type,
+            String link,
+            String userEmail,
+            String emailSubject
+    ) {
+
         Notification notification = new Notification();
+
         notification.setMessage(message);
         notification.setType(type);
         notification.setLink(link);
@@ -30,13 +44,26 @@ public class NotificationService {
         notification.setCreatedAt(LocalDateTime.now());
 
         repository.save(notification);
+
+        // SEND EMAIL
+        if (userEmail != null && !userEmail.isBlank()) {
+
+            emailService.sendEmail(
+                    userEmail,
+                    emailSubject,
+                    message
+            );
+        }
     }
 
     public void markAsRead(Long id) {
+
         Notification notification = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Notification not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Notification not found"));
 
         notification.setRead(true);
+
         repository.save(notification);
     }
 }

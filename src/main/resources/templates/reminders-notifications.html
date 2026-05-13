@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Reminders & Notifications | SiteVisit</title>
     <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/notification.css">
 </head>
 <body>
 
@@ -27,7 +28,7 @@
                 <a href="/members">Member Management</a>
                 <a href="/site-visits">Site Visits</a>
                 <a href="/reports">Reports</a>
-                <a href="/reminders-notifications" class="active">Reminders&Notifications</a>
+                <a href="/reminders-notifications" class="active">Reminders & Notifications</a>
                 <a href="/profile">Profile</a>
                 <a href="/login">Logout</a>
             </nav>
@@ -43,6 +44,94 @@
 
                 <div class="notification-bell" onclick="toggleNotifications()">
                     🔔 <span id="notif-count">0</span>
+                </div>
+            </div>
+
+            <!-- SEARCH + FILTERS -->
+            <div class="panel notification-filter-panel">
+
+                <div class="panel-header">
+                    <h3>Search & Filter Notifications</h3>
+                </div>
+
+                <div class="notification-filter-grid">
+
+                    <!-- SEARCH -->
+                    <div class="form-group filter-search-group">
+                        <label>Search</label>
+
+                        <input
+                                type="text"
+                                id="notificationSearch"
+                                class="form-input"
+                                placeholder="Search notifications..."
+                                onkeyup="filterNotifications()"
+                        >
+                    </div>
+
+                    <!-- TYPE FILTER -->
+                    <div class="form-group filter-type-group">
+                        <label>Filter By Type</label>
+
+                        <select
+                                id="notificationTypeFilter"
+                                class="form-input"
+                                onchange="filterNotifications()"
+                        >
+                            <option value="">All Notifications</option>
+
+                            <option value="REPORT">
+                                Reports
+                            </option>
+
+                            <option value="REPORT_SUBMITTED">
+                                Reports Submitted
+                            </option>
+
+                            <option value="SITE_VISIT_SCHEDULED">
+                                Site Visits
+                            </option>
+
+                            <option value="SITE_VISIT_REMINDER">
+                                Site Visit Reminders
+                            </option>
+
+                            <option value="PAYMENT_REMINDER">
+                                Payment Reminders
+                            </option>
+
+                            <option value="PAYMENT_OVERDUE">
+                                Overdue Payments
+                            </option>
+
+                            <option value="PAYMENT_PAID">
+                                Payments Paid
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- DATE FILTER -->
+                    <div class="form-group filter-date-group">
+                        <label>Filter By Date</label>
+
+                        <input
+                                type="date"
+                                id="notificationDateFilter"
+                                class="form-input"
+                                onchange="filterNotifications()"
+                        >
+                    </div>
+
+                    <!-- RESET -->
+                    <div class="form-group filter-reset-group">
+                        <button
+                                class="btn small-btn"
+                                onclick="resetNotificationFilters()"
+                        >
+                            Reset
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
@@ -79,11 +168,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Recipient Email</label>
-                            <input type="hidden" id="recipientEmail" th:value="${email}">
-                        </div>
-
-                        <div class="form-group">
                             <label>Reminder Message</label>
                             <textarea id="message" class="form-input" rows="5" placeholder="Enter reminder message"></textarea>
                         </div>
@@ -113,7 +197,6 @@
                             <tr>
                                 <th>Title</th>
                                 <th>Payment Date</th>
-                                <th>Email</th>
                                 <th>Status</th>
                                 <th>Last Reminder</th>
                                 <th>Action</th>
@@ -121,7 +204,7 @@
                             </thead>
                             <tbody id="paymentReminderTableBody">
                             <tr>
-                                <td colspan="6" style="text-align:center;">Loading reminders...</td>
+                                <td colspan="5" style="text-align:center;">Loading reminders...</td>
                             </tr>
                             </tbody>
                         </table>
