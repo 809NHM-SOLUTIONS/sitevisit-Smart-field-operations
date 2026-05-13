@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/css/dashboard.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet"
@@ -41,7 +43,6 @@
         </aside>
 
         <section class="dashboard-content">
-
             <div class="dashboard-topbar">
                 <div>
                     <h2>Executive Dashboard</h2>
@@ -50,12 +51,19 @@
                     </p>
                 </div>
 
-                <div class="profile-card">
-                    <div class="profile-avatar" th:text="${initial}">N</div>
-                    <div>
-                        <h4 th:text="${fullName}"></h4>
-                        <span th:text="${role}"></span>
+                <div class="topbar-actions">
+                    <div class="notification-bell" onclick="window.location.href='/reminders-notifications'">
+                        🔔 <span id="notif-count">0</span>
                     </div>
+
+                    <div class="profile-card">
+                        <div class="profile-avatar" th:text="${initial}">N</div>
+                        <div>
+                            <h4 th:text="${fullName}"></h4>
+                            <span th:text="${role}"></span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="stats-grid">
@@ -77,12 +85,17 @@
                     <p>Registered companies</p>
                 </div>
 
+                <div class="stat-card">
+                    <span>Total Reports</span>
+                    <h3 th:text="${totalReports}">0</h3>
+                    <p>Generated system reports</p>
+                </div>
             </div>
             <div class="dashboard-grid">
                 <div class="panel large-panel">
                     <div class="panel-header">
                         <h3>Scheduled Site Visits</h3>
-                        <button class="btn btn-primary small-btn" onclick="showMessage('View all site visits clicked')">
+                        <button class="btn btn-primary small-btn" onclick="window.location.href='/site-visits'">
                             View All
                         </button>
                     </div>
@@ -103,7 +116,7 @@
                                 <td colspan="5">No site visits available</td>
                             </tr>
 
-                            <tr th:each="visit : ${siteVisits}">
+                            <tr th:each="visit, iterStat : ${siteVisits}" th:if="${iterStat.index < 3}">
                                 <td th:text="${visit.id}">1</td>
                                 <td th:text="${visit.company != null ? visit.company.name : 'No Company'}">Company Name</td>
                                 <td th:text="${visit.visitDate}">2026-04-22</td>
@@ -149,8 +162,7 @@
                         <div class="quick-actions">
                             <button onclick="window.location.href='/site-visits'">+ New Site Visit</button>
                             <button onclick="window.location.href='/reports'">+ New Report</button>
-                            <button onclick="window.location.href='/reminders'">+ Send Reminder</button>
-                            <button onclick="window.location.href='/dashboard'">+ Team Activity</button>
+                            <button onclick="window.location.href='/reminders-notifications'">+ Send Reminder</button>
                         </div>
                     </div>
                 </div>
@@ -164,7 +176,8 @@
     function showMessage(message) {
         alert(message);
     }
-</script>
 
+</script>
+<script src="/js/notifications.js"></script>
 </body>
 </html>

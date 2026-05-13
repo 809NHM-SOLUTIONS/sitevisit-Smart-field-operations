@@ -1,10 +1,7 @@
 package com.sitevisit.smartfieldoperations.controller;
 
 import com.sitevisit.smartfieldoperations.entity.User;
-import com.sitevisit.smartfieldoperations.repository.CompanyRepository;
-import com.sitevisit.smartfieldoperations.repository.ReportRepository;
-import com.sitevisit.smartfieldoperations.repository.SiteVisitRepository;
-import com.sitevisit.smartfieldoperations.repository.UserRepository;
+import com.sitevisit.smartfieldoperations.repository.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +14,20 @@ public class PageController {
 
     private final UserRepository userRepository;
     private final SiteVisitRepository siteVisitRepository;
+    private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final ReportRepository reportRepository;
 
-    public PageController(UserRepository userRepository,
-                          SiteVisitRepository siteVisitRepository,
-                          CompanyRepository companyRepository,
-                          ReportRepository reportRepository) {
+    public PageController(
+            UserRepository userRepository,
+            SiteVisitRepository siteVisitRepository,
+            MemberRepository memberRepository,
+            CompanyRepository companyRepository,
+            ReportRepository reportRepository
+    ) {
         this.userRepository = userRepository;
         this.siteVisitRepository = siteVisitRepository;
+        this.memberRepository = memberRepository;
         this.companyRepository = companyRepository;
         this.reportRepository = reportRepository;
     }
@@ -53,12 +55,15 @@ public class PageController {
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
         User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         addUserToModel(model, user);
 
         model.addAttribute("totalSiteVisits", siteVisitRepository.count());
-        model.addAttribute("totalMembers", userRepository.count());
+        model.addAttribute("totalMembers", memberRepository.count());
         model.addAttribute("totalCompanies", companyRepository.count());
         model.addAttribute("totalReports", reportRepository.count());
 
@@ -71,7 +76,10 @@ public class PageController {
     @GetMapping("/companies")
     public String companiesPage(Model model, HttpSession session) {
         User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         addUserToModel(model, user);
         return "companies";
@@ -80,7 +88,10 @@ public class PageController {
     @GetMapping("/members")
     public String membersPage(Model model, HttpSession session) {
         User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         addUserToModel(model, user);
         return "members";
@@ -89,7 +100,10 @@ public class PageController {
     @GetMapping("/site-visits")
     public String siteVisitsPage(Model model, HttpSession session) {
         User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         addUserToModel(model, user);
         model.addAttribute("companies", companyRepository.findAll());
@@ -101,23 +115,61 @@ public class PageController {
     @GetMapping("/reports")
     public String reportsPage(Model model, HttpSession session) {
         User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         addUserToModel(model, user);
+        model.addAttribute("reports", reportRepository.findAll());
+
         return "reports";
     }
+
+    @GetMapping("/profile")
+    public String profilePage(Model model, HttpSession session) {
+        User user = getLoggedInUser(session);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        addUserToModel(model, user);
+        model.addAttribute("email", user.getEmail());
+
+        return "profile";
+    }
+
     @GetMapping("/change-password")
     public String changePasswordPage(Model model, HttpSession session) {
         User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
+
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         addUserToModel(model, user);
         return "change-password";
     }
+
+    @GetMapping("/reminders-notifications")
+    public String remindersNotificationsPage(Model model, HttpSession session) {
+        User user = getLoggedInUser(session);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        addUserToModel(model, user);
+        model.addAttribute("email", user.getEmail());
+
+        return "reminders-notifications";
+    }
+
     private User getLoggedInUser(HttpSession session) {
         String email = (String) session.getAttribute("loggedInUserEmail");
 
-        if (email == null) {
+        if (email == null || email.isBlank()) {
             return null;
         }
 
@@ -126,28 +178,12 @@ public class PageController {
     }
 
     private void addUserToModel(Model model, User user) {
-        model.addAttribute("fullName", user.getFullName());
+        String fullName = user.getFullName();
+
+        model.addAttribute("fullName", fullName);
         model.addAttribute("role", user.getRole());
-        model.addAttribute("initial", user.getFullName().substring(0, 1).toUpperCase());
-    }
-    @GetMapping("/profile")
-    public String profilePage(Model model, HttpSession session) {
-        User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
-
-        addUserToModel(model, user);
-        model.addAttribute("email", user.getEmail());
-
-        return "profile";
-    }
-    @GetMapping("/reminders-notifications")
-    public String remindersNotificationsPage(Model model, HttpSession session) {
-        User user = getLoggedInUser(session);
-        if (user == null) return "redirect:/login";
-
-        addUserToModel(model, user);
-        model.addAttribute("email", user.getEmail());
-
-        return "reminders-notifications";
+        model.addAttribute("initial", fullName != null && !fullName.isBlank()
+                ? fullName.substring(0, 1).toUpperCase()
+                : "U");
     }
 }

@@ -3,21 +3,26 @@ let showAllNotifications = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchNotifications();
-    setInterval(fetchNotifications, 10000); // auto refresh
+    setInterval(fetchNotifications, 10000);
 });
 
 async function fetchNotifications() {
     const list = document.getElementById("notification-list");
     const countBadge = document.getElementById("notif-count");
 
-    if (!list || !countBadge) return;
-
     try {
         const response = await fetch(NOTIFICATION_API_URL);
         const notifications = await response.json();
 
         const unreadCount = notifications.filter(n => !n.read).length;
-        countBadge.textContent = unreadCount;
+
+        if (countBadge) {
+            countBadge.textContent = unreadCount;
+        }
+
+        // Dashboard only has the bell count, not the list.
+        // So stop here after updating the count.
+        if (!list) return;
 
         list.innerHTML = "";
 
@@ -26,7 +31,6 @@ async function fetchNotifications() {
             : notifications.slice(0, 3);
 
         visibleNotifications.forEach(notification => {
-
             const li = document.createElement("li");
             li.className = notification.read ? "notification read" : "notification unread";
 
@@ -49,7 +53,6 @@ async function fetchNotifications() {
                 </div>
             `;
 
-            // 🔥 CLICK = READ + REDIRECT
             li.addEventListener("click", async () => {
                 try {
                     if (!notification.read) {
@@ -61,6 +64,8 @@ async function fetchNotifications() {
                     if (notification.link) {
                         window.location.href = notification.link;
                     }
+
+                    fetchNotifications();
 
                 } catch (error) {
                     console.error(error);
@@ -83,8 +88,10 @@ function markNotificationAsRead(id) {
 
 function toggleNotifications() {
     const panel = document.getElementById("notification-panel");
+
     if (panel) {
         panel.classList.toggle("hidden");
+
         if (!panel.classList.contains("hidden")) {
             fetchNotifications();
         }
@@ -98,6 +105,8 @@ function getNotificationIcon(type) {
         case "PAYMENT_PAID": return "✅";
         case "PAYMENT_UPDATED": return "✏️";
         case "SITE_VISIT_SCHEDULED": return "📅";
+        case "SITE_VISIT_REMINDER": return "🔔";
+        case "REPORT": return "🔔";
         default: return "🔔";
     }
 }
