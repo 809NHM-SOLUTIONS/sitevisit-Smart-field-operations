@@ -416,13 +416,9 @@ label {
     transition: 0.2s ease;
 }
 
-.edit-btn:hover {
-    background: #1d4ed8;
-}
-
 .delete-btn-table {
-    background: #dc2626;
-    color: #fff;
+    background: #fff ;
+    color: #dc2626;
     border: none;
     padding: 8px 14px;
     border-radius: 8px;
@@ -430,10 +426,6 @@ label {
     font-size: 13px;
     font-weight: 600;
     transition: 0.2s ease;
-}
-
-.delete-btn-table:hover {
-    background: #b91c1c;
 }
 
 /* Cancel edit button */
@@ -528,13 +520,11 @@ label {
 }
 
 .delete-btn {
-    background: #dc2626;
-    color: #fff;
+    background: #fff;
+    color:  #dc2626;
 }
 
-.delete-btn:hover {
-    background: #b91c1c;
-}
+
 
 @keyframes modalFadeIn {
     from {
