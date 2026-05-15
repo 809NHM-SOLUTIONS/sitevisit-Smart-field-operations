@@ -10,24 +10,20 @@ document.getElementById("changePasswordForm").addEventListener("submit", async f
     messageBox.textContent = "";
     messageBox.className = "message-box";
 
+    const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+
     if (newPassword !== confirmPassword) {
-        messageBox.style.display = "block";
-        messageBox.textContent = "New password and confirm password do not match.";
-        messageBox.classList.add("error");
+        showMessage("New password and confirm password do not match.", "error");
         return;
     }
 
-    if (newPassword.length < 8) {
-        messageBox.style.display = "block";
-        messageBox.textContent = "New password must be at least 8 characters long.";
-        messageBox.classList.add("error");
+    if (!strongPasswordPattern.test(newPassword)) {
+        showMessage("Password must be at least 8 characters and include uppercase, lowercase, number, and special character.", "error");
         return;
     }
 
     if (currentPassword === newPassword) {
-        messageBox.style.display = "block";
-        messageBox.textContent = "New password must be different from current password.";
-        messageBox.classList.add("error");
+        showMessage("New password must be different from current password.", "error");
         return;
     }
 
@@ -47,22 +43,49 @@ document.getElementById("changePasswordForm").addEventListener("submit", async f
 
         const data = await response.json();
 
-        messageBox.style.display = "block";
-        messageBox.textContent = data.message;
-
         if (response.ok && data.success) {
-            messageBox.classList.add("success");
+            showMessage(data.message || "Password updated successfully.", "success");
+
             document.getElementById("changePasswordForm").reset();
 
             setTimeout(() => {
                 window.location.href = "/login";
             }, 2000);
         } else {
-            messageBox.classList.add("error");
+            showMessage(data.message || "Password update failed.", "error");
         }
+
     } catch (error) {
-        messageBox.style.display = "block";
-        messageBox.textContent = "Something went wrong. Please try again.";
-        messageBox.classList.add("error");
+        showMessage("Something went wrong. Please try again.", "error");
     }
 });
+
+function showMessage(message, type) {
+    const messageBox = document.getElementById("messageBox");
+
+    messageBox.style.display = "block";
+    messageBox.textContent = message;
+    messageBox.className = "message-box";
+    messageBox.classList.add(type);
+}
+
+function togglePassword(inputId, button) {
+
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector("i");
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+
+    } else {
+
+        input.type = "password";
+
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }
+}

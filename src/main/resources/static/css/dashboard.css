@@ -858,3 +858,37 @@ td {
         opacity: 1;
     }
 }
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.topbar-actions .notification-bell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: #0b2f5b;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 10px;
+    transition: 0.25s ease;
+}
+
+.topbar-actions .notification-bell:hover {
+    background: #f5ead0;
+}
+
+.topbar-actions .notification-bell span {
+    color: #0b2f5b;
+    font-size: 14px;
+    font-weight: 800;
+}
