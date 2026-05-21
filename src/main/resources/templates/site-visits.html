@@ -94,9 +94,11 @@
                     <h3>Schedule Site Visit</h3>
                 </div>
 
-                <form th:action="${editVisit != null} ?
-        @{/site-visits/update/{id}(id=${editVisit.id})} :
-        @{/site-visits/save}"
+                <form th:action="${editVisit != null}
+        ? '/site-visits/update/' + ${editVisit.id}
+        : '/site-visits/save'"
+                      method="post"
+                      class="site-visit-form">
                       method="post"
                       class="site-visit-form">
 
@@ -254,9 +256,12 @@
                         <thead>
 
                         <tr>
-                            <th>ID</th>
+                        <tr>
+
                             <th>Company</th>
                             <th>Email</th>
+                            <th>Phone</th>
+                            <th>Registration Number</th>
                             <th>Address</th>
                             <th>Date</th>
                             <th>Time</th>
@@ -268,17 +273,20 @@
                             <th>Manage Visit</th>
                         </tr>
 
+
                         </thead>
 
                         <tbody>
 
                         <tr th:each="visit : ${siteVisits}">
 
-                            <td th:text="${visit.id}"></td>
-
                             <td th:text="${visit.company.name}"></td>
 
                             <td th:text="${visit.company.email}"></td>
+
+                            <td th:text="${visit.company.phone}"></td>
+
+                            <td th:text="${visit.company.regNumber}"></td>
 
                             <td th:text="${visit.company.address}"></td>
 

@@ -157,40 +157,42 @@ function renderCompanies() {
             document.createElement('tr');
 
         row.innerHTML = `
-            <td>${escapeHtml(c.regNumber)}</td>
+    <td>${escapeHtml(c.regNumber)}</td>
 
-            <td>
-                <strong>${escapeHtml(c.name)}</strong>
-            </td>
+    <td>
+        <strong>${escapeHtml(c.name)}</strong>
+    </td>
 
-            <td>${escapeHtml(c.email)}</td>
+    <td>${escapeHtml(c.email)}</td>
 
-            <td>${escapeHtml(c.address)}</td>
+    <td>${escapeHtml(c.phone)}</td>
 
-            <td class="actions-cell">
+    <td>${escapeHtml(c.address)}</td>
 
-                <div class="action-group">
+    <td class="actions-cell">
 
-                    <button
-                        class="action-btn btn-edit"
-                        onclick="prepEdit(${c.id})">
+        <div class="action-group">
 
-                        Edit
+            <button
+                class="action-btn btn-edit"
+                onclick="prepEdit(${c.id})">
 
-                    </button>
+                Edit
 
-                    <button
-                        class="action-btn btn-delete"
-                        onclick="deleteCompany(${c.id})">
+            </button>
 
-                        Delete
+            <button
+                class="action-btn btn-delete"
+                onclick="deleteCompany(${c.id})">
 
-                    </button>
+                Delete
 
-                </div>
+            </button>
 
-            </td>
-        `;
+        </div>
+
+    </td>
+`;
 
         tbody.appendChild(row);
     });
