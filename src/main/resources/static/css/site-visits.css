@@ -846,151 +846,332 @@ tbody tr:hover {
 
     background:#ece7dc;
 }
-@media (max-width:1200px){
-    .dashboard-shell{
-        flex-direction:column;
-    }
-    .sidebar{
-        width:100%;
-    }
+/* Desktop defaults */
+
+.desktop-table {
+    display: block;
 }
-@media (max-width:900px){
 
-    .dashboard-section{
-        padding:12px;
-    }
-
-    .dashboard-content{
-        padding:5px;
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-    .full-width{
-        grid-column:auto;
-    }
-    .dashboard-topbar h2{
-        font-size:28px;
-    }
+.mobile-cards {
+    display: none;
 }
-@media (max-width:640px){
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
 
-    .dashboard-section{
-        padding:8px;
-    }
-   .dashboard-shell{
-        gap:12px;
-    }
-   .sidebar{
-        padding:15px;
-        border-radius:18px;
-    }
-    .sidebar-brand{
-        justify-content:center;
-    }
-    .sidebar-links{
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:8px;
-    }
-    .sidebar-links a{
-        padding:10px 6px;
-        font-size:12px;
-        text-align:center;
-    }
-    .dashboard-topbar h2{
-        font-size:24px;
-    }
- .dashboard-topbar p{
-        font-size:13px;
-    }
-    .panel{
-        padding:15px;
-        border-radius:18px;
-    }
-    .panel-header h3{
-        font-size:20px;
-    }
-    .form-grid{
-        grid-template-columns:1fr;
-    }
- .form-input{
-        font-size:16px;
-    }
-    .form-actions .btn{
-        width:100%;
-    }
-    .download-btn{
-        width:100%;
-        justify-content:center;
-    }
-    .table-container{
-        overflow-x:auto;
-    }
-   .table-wrapper{
-        min-width:1200px;
-    }
- th,
-    td{
-        padding:10px;
-        font-size:12px;
-    }
-.status-action-buttons{
-        flex-direction:column;
-    }
-.small-btn{
-        width:100%;
-    }
-.toast{
-        left:10px;
-        right:10px;
-        min-width:auto;
-    }
-    .custom-modal-content{
-        width:95%;
-    }
-    .custom-modal-actions{
-        flex-direction:column;
-    }
-    .custom-modal-actions .btn{
-        width:100%;
-    }
-}
 .mobile-menu-btn {
-    display:none;
-    background:#1f4d3a;
-    color:white;
-    border:none;
-    padding:12px 16px;
-    border-radius:12px;
-    font-size:22px;
-    cursor:pointer;
+    display: none;
+    background: #1f4d3a;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,.15);
 }
 
-@media(max-width:900px){
+/* ==========================================
+   LARGE TABLETS
+========================================== */
 
-    .mobile-menu-btn{
-        display:block;
-        position:fixed;
-        top:20px;
-        left:20px;
-        z-index:9999;
+@media (max-width: 1200px) {
+
+    .dashboard-shell {
+        flex-direction: column;
     }
-    .sidebar{
-        position:fixed;
-        left:-300px;
-        top:0;
-        height:100vh;
-        z-index:9998;
-        transition:0.3s ease;
+
+    .sidebar {
+        width: 100%;
     }
-    .sidebar.show{
-        left:0;
+
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 992px) {
+
+    .dashboard-section {
+        padding: 12px;
     }
-.dashboard-content{
-        width:100%;
-        padding-top:70px;
+
+    .dashboard-content {
+        width: 100%;
+        padding-top: 80px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .dashboard-topbar h2 {
+        font-size: 28px;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -320px;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 9998;
+        transition: left 0.3s ease;
+        border-radius: 0;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 9999;
+    }
+
+}
+/* ==========================================
+   MOBILE CARDS
+========================================== */
+
+.mobile-cards {
+    display: none;
+}
+
+.visit-card {
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    margin-bottom: 16px;
+
+    box-shadow:
+            0 4px 12px rgba(0,0,0,.08);
+
+}
+
+.card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 15px;
+
+    gap: 10px;
+
+}
+
+.card-header h4 {
+
+    margin: 0;
+
+    color: #172b4d;
+
+    font-size: 18px;
+
+}
+
+.card-body {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+}
+
+.card-body p {
+
+    margin: 0;
+
+    color: #475569;
+
+    word-break: break-word;
+
+}
+
+.card-actions {
+
+    margin-top: 16px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+}
+
+.card-actions .btn {
+
+    width: 100%;
+
+}
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 768px) {
+    .desktop-table {
+        display: none;
+    }
+
+    .mobile-cards {
+        display: block;
+    }
+    .dashboard-section {
+        padding: 10px;
+    }
+
+    .dashboard-shell {
+        gap: 12px;
+    }
+
+    .dashboard-content {
+        padding: 75px 0 0;
+    }
+
+    .panel {
+        padding: 15px;
+        border-radius: 18px;
+    }
+
+    .panel-header h3 {
+        font-size: 20px;
+    }
+
+    .dashboard-topbar h2 {
+        font-size: 24px;
+    }
+
+    .dashboard-topbar p {
+        font-size: 13px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-input {
+        font-size: 16px;
+    }
+
+    .btn,
+    .small-btn,
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    .download-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .status-action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .mobile-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-scroll table {
+        min-width: 1700px;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .toast {
+        left: 10px;
+        right: 10px;
+        min-width: auto;
+    }
+
+    .custom-modal-content {
+        width: 95%;
+    }
+
+    .custom-modal-actions {
+        flex-direction: column;
+    }
+
+    .custom-modal-actions .btn {
+        width: 100%;
+    }
+
+}
+
+/* ==========================================
+   SMALL PHONES
+========================================== */
+
+@media (max-width: 480px) {
+
+    .dashboard-section {
+        padding: 8px;
+    }
+
+    .panel {
+        padding: 12px;
+    }
+
+    .dashboard-topbar h2 {
+        font-size: 20px;
+    }
+
+    .dashboard-topbar p {
+        font-size: 12px;
+    }
+
+    .panel-header h3 {
+        font-size: 18px;
+    }
+
+    .sidebar {
+        width: 260px;
+    }
+
+    .sidebar-brand {
+        justify-content: center;
+    }
+
+    .sidebar-links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sidebar-links a {
+        font-size: 14px;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .mobile-menu-btn {
+        font-size: 20px;
+        padding: 10px 14px;
     }
 
 }

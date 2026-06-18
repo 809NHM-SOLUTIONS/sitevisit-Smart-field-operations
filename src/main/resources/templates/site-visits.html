@@ -350,15 +350,9 @@
                     </button>
 
                 </div>
-
-
-
-                <div class="table-container">
-
-                    <div class="table-wrapper">
-
-
-                        <table>
+                <div class="table-container desktop-table">
+                    <div class="table-wrapper mobile-scroll">
+      <table>
 
                             <thead>
 
@@ -520,7 +514,102 @@
                     </div>
 
                 </div>
+                <div class="mobile-cards">
 
+                    <div class="visit-card"
+                         th:each="visit : ${siteVisits}">
+
+                        <div class="card-header">
+
+                            <h4 th:text="${visit.company.name}">
+                                Company
+                            </h4>
+
+                            <span class="status"
+                                  th:text="${visit.status}">
+            </span>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <p>
+                                <strong>Email:</strong>
+                                <span th:text="${visit.company.email}"></span>
+                            </p>
+
+                            <p>
+                                <strong>Phone:</strong>
+                                <span th:text="${visit.company.phone}"></span>
+                            </p>
+
+                            <p>
+                                <strong>Registration:</strong>
+                                <span th:text="${visit.company.regNumber}"></span>
+                            </p>
+
+                            <p>
+                                <strong>Address:</strong>
+                                <span th:text="${visit.company.address}"></span>
+                            </p>
+
+                            <p>
+                                <strong>Date:</strong>
+                                <span th:text="${visit.visitDate}"></span>
+                            </p>
+
+                            <p>
+                                <strong>Time:</strong>
+                                <span th:text="${visit.visitTime}"></span>
+                            </p>
+
+                            <p>
+                                <strong>Attendance:</strong>
+                                <span th:id="'attendance-status-mobile-' + ${visit.id}">
+                    Loading...
+                </span>
+                            </p>
+
+                        </div>
+
+                        <div class="card-actions">
+
+                            <button type="button"
+                                    th:onclick="'checkIn(' + ${visit.id} + ')'"
+                                    class="btn btn-primary">
+
+                                Check In
+
+                            </button>
+
+                            <button type="button"
+                                    th:onclick="'checkOut(' + ${visit.id} + ')'"
+                                    class="btn btn-primary">
+
+                                Check Out
+
+                            </button>
+
+                            <a th:href="@{/site-visits/edit/{id}(id=${visit.id})}"
+                               class="btn btn-primary">
+
+                                Edit
+
+                            </a>
+
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    th:onclick="'confirmDelete(' + ${visit.id} + ')'">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
                 <div class="view-toggle">
 
@@ -594,31 +683,15 @@
 
             <form id="deleteForm"
                   method="post">
-
-
                 <button type="submit"
                         class="btn btn-danger">
-
                     Delete Visit
-
                 </button>
-
-
             </form>
-
-
         </div>
-
-
     </div>
-
-
 </div>
-
-
-
 <script>
-
 
     // MOBILE SIDEBAR
 
@@ -626,10 +699,27 @@
 
         const sidebar =
             document.getElementById("sidebar");
-
-
         sidebar.classList.toggle("show");
+        document.addEventListener("click", function(event) {
 
+            const sidebar =
+                document.getElementById("sidebar");
+
+            const menuButton =
+                document.querySelector(".mobile-menu-btn");
+
+            if (
+                window.innerWidth <= 992 &&
+                sidebar.classList.contains("show") &&
+                !sidebar.contains(event.target) &&
+                !menuButton.contains(event.target)
+            ) {
+
+                sidebar.classList.remove("show");
+
+            }
+
+        });
     }
 
 
@@ -701,10 +791,7 @@
         const companyId =
             document.getElementById("companyId").value;
 
-
-
         if (!companyId) {
-
 
             document.getElementById("companyName").value = "";
 
@@ -715,17 +802,9 @@
             document.getElementById("companyAddress").value = "";
 
             document.getElementById("companyRegNumber").value = "";
-
-
             return;
-
         }
-
-
-
         try {
-
-
             const response =
                 await fetch(
                     `/api/companies/${companyId}`
@@ -760,103 +839,83 @@
 
             document.getElementById("companyPhone").value =
                 company.phone || "";
-
-
-
             document.getElementById("companyAddress").value =
                 company.address || "";
-
-
-
             document.getElementById("companyRegNumber").value =
                 company.regNumber || "";
-
-
-
         } catch(error) {
-
-
             showMessage(
                 "Failed to load company details",
                 false
             );
-
-
         }
-
-
     }
-
-
-        function renderAttendance(visitId, attendance) {
+    function renderAttendance(visitId, attendance) {
 
         const statusEl =
-        document.getElementById(
-        `attendance-status-${visitId}`
-        );
-
+            document.getElementById(
+                `attendance-status-${visitId}`
+            );
 
         const inEl =
-        document.getElementById(
-        `checkin-time-${visitId}`
-        );
-
+            document.getElementById(
+                `checkin-time-${visitId}`
+            );
 
         const outEl =
-        document.getElementById(
-        `checkout-time-${visitId}`
-        );
+            document.getElementById(
+                `checkout-time-${visitId}`
+            );
 
+        const mobileStatus =
+            document.getElementById(
+                `attendance-status-mobile-${visitId}`
+            );
 
         if (!statusEl || !inEl || !outEl) {
-        return;
-    }
-
-
+            return;
+        }
 
         if (!attendance) {
 
+            statusEl.textContent =
+                "Not Started";
+
+            if (mobileStatus) {
+                mobileStatus.textContent =
+                    "Not Started";
+            }
+
+            inEl.textContent =
+                "-";
+
+            outEl.textContent =
+                "-";
+
+            return;
+        }
 
         statusEl.textContent =
-        "Not Started";
+            attendance.status || "Checked In";
 
+        if (mobileStatus) {
 
-        inEl.textContent =
-        "-";
+            mobileStatus.textContent =
+                attendance.status || "Checked In";
 
-
-        outEl.textContent =
-        "-";
-
-
-        return;
-
-    }
-
-
-
-        statusEl.textContent =
-        attendance.status || "Checked In";
-
+        }
 
         inEl.textContent =
-        formatTime(
-        attendance.checkInTime
-        );
-
+            formatTime(
+                attendance.checkInTime
+            );
 
         outEl.textContent =
-        formatTime(
-        attendance.checkOutTime
-        );
-
+            formatTime(
+                attendance.checkOutTime
+            );
 
     }
-
-
-
-
-
         async function checkIn(id) {
 
 
