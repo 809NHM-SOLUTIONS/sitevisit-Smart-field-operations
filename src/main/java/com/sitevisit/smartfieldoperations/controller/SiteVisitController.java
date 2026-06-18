@@ -10,22 +10,33 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.sitevisit.smartfieldoperations.service.PdfService;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.InputStreamResource;
+
+import java.io.ByteArrayInputStream;
+import java.util.List;
 @Controller
 public class SiteVisitController {
 
     private final SiteVisitRepository siteVisitRepository;
     private final CompanyRepository companyRepository;
     private final NotificationService notificationService;
+    private final PdfService pdfService;
 
     public SiteVisitController(
             SiteVisitRepository siteVisitRepository,
             CompanyRepository companyRepository,
-            NotificationService notificationService
+            NotificationService notificationService,
+            PdfService pdfService
     ) {
         this.siteVisitRepository = siteVisitRepository;
         this.companyRepository = companyRepository;
         this.notificationService = notificationService;
+        this.pdfService = pdfService;
     }
 
     // =========================
@@ -255,5 +266,41 @@ public class SiteVisitController {
         }
 
         return response;
+    }
+    // =========================
+// DOWNLOAD SITE VISITS PDF
+// =========================
+
+    @GetMapping("/site-visits/download-pdf")
+    public ResponseEntity<InputStreamResource> downloadPdf(){
+
+
+        List<SiteVisit> visits =
+                siteVisitRepository.findAll();
+
+
+        ByteArrayInputStream pdf =
+                pdfService.generateSiteVisitsPdf(visits);
+
+
+
+        HttpHeaders headers =
+                new HttpHeaders();
+
+
+        headers.add(
+                "Content-Disposition",
+                "attachment; filename=scheduled-site-visits.pdf"
+        );
+
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(
+                        new InputStreamResource(pdf)
+                );
+
     }
 }

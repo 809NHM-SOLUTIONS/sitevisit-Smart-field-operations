@@ -20,8 +20,14 @@
 
     <div class="dashboard-shell">
 
+        <!-- MOBILE MENU BUTTON -->
+        <button class="mobile-menu-btn"
+                onclick="toggleSidebar()">
+            ☰
+        </button>
+
         <!-- SIDEBAR -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
 
             <div class="sidebar-brand">
 
@@ -39,17 +45,44 @@
             </div>
 
             <nav class="sidebar-links">
-                <a href="/dashboard">Dashboard</a>
-                <a href="/companies">Company Management</a>
-                <a href="/members">Member Management</a>
-                <a href="/site-visits" class="active">Site Visits</a>
-                <a href="/reports">Reports</a>
-                <a href="/reminders-notifications">Reminders & Notifications</a>
-                <a href="/profile">Profile</a>
-                <a href="/login">Logout</a>
+
+                <a href="/dashboard">
+                    Dashboard
+                </a>
+
+                <a href="/companies">
+                    Company Management
+                </a>
+
+                <a href="/members">
+                    Member Management
+                </a>
+
+                <a href="/site-visits"
+                   class="active">
+                    Site Visits
+                </a>
+
+                <a href="/reports">
+                    Reports
+                </a>
+
+                <a href="/reminders-notifications">
+                    Reminders & Notifications
+                </a>
+
+                <a href="/profile">
+                    Profile
+                </a>
+
+                <a href="/login">
+                    Logout
+                </a>
+
             </nav>
 
         </aside>
+
 
         <!-- MAIN -->
         <section class="dashboard-content">
@@ -67,11 +100,13 @@
 
             </div>
 
+
             <!-- MESSAGE -->
             <div id="messageBox"
                  class="message-box"
                  style="display:none;">
             </div>
+
 
             <div th:if="${successMessage}"
                  class="message-box"
@@ -84,27 +119,36 @@
 
             </div>
 
+
             <!-- TOAST -->
-            <div id="toast" class="toast"></div>
+            <div id="toast"
+                 class="toast">
+            </div>
+
 
             <!-- FORM -->
-            <div class="panel large-panel" style="margin-bottom:24px;">
+            <div class="panel large-panel"
+                 style="margin-bottom:24px;">
 
                 <div class="panel-header">
                     <h3>Schedule Site Visit</h3>
                 </div>
 
-                <form th:action="${editVisit != null}
-        ? '/site-visits/update/' + ${editVisit.id}
-        : '/site-visits/save'"
+
+                <form th:action="${editVisit != null ? '/site-visits/update/' + editVisit.id : '/site-visits/save'}"
                       method="post"
                       class="site-visit-form">
 
+
                     <div class="form-grid">
+
 
                         <!-- Company Selection -->
                         <div class="form-group">
-                            <label for="companyId">Select Company</label>
+
+                            <label for="companyId">
+                                Select Company
+                            </label>
 
                             <select id="companyId"
                                     name="companyId"
@@ -122,43 +166,61 @@
                                 </option>
 
                             </select>
+
                         </div>
+
 
                         <!-- Company Name -->
                         <div class="form-group">
-                            <label for="companyName">Company Name</label>
+
+                            <label for="companyName">
+                                Company Name
+                            </label>
 
                             <input type="text"
                                    id="companyName"
                                    class="form-input"
                                    th:value="${editVisit != null ? editVisit.company.name : ''}"
                                    readonly />
+
                         </div>
+
 
                         <!-- Email -->
                         <div class="form-group">
-                            <label for="companyEmail">Email</label>
+
+                            <label for="companyEmail">
+                                Email
+                            </label>
 
                             <input type="text"
                                    id="companyEmail"
                                    class="form-input"
                                    th:value="${editVisit != null ? editVisit.company.email : ''}"
                                    readonly />
+
                         </div>
+
 
                         <!-- Phone -->
                         <div class="form-group">
-                            <label for="companyPhone">Phone</label>
+
+                            <label for="companyPhone">
+                                Phone
+                            </label>
 
                             <input type="text"
                                    id="companyPhone"
                                    class="form-input"
                                    th:value="${editVisit != null ? editVisit.company.phone : ''}"
                                    readonly />
+
                         </div>
+
 
                         <!-- Registration Number -->
                         <div class="form-group">
+
                             <label for="companyRegNumber">
                                 Registration Number
                             </label>
@@ -168,10 +230,11 @@
                                    class="form-input"
                                    th:value="${editVisit != null ? editVisit.company.regNumber : ''}"
                                    readonly />
-                        </div>
 
+                        </div>
                         <!-- Address -->
                         <div class="form-group full-width">
+
                             <label for="companyAddress">
                                 Company Address
                             </label>
@@ -181,11 +244,16 @@
                                    class="form-input"
                                    th:value="${editVisit != null ? editVisit.company.address : ''}"
                                    readonly />
+
                         </div>
+
 
                         <!-- Visit Date -->
                         <div class="form-group">
-                            <label for="visitDate">Visit Date</label>
+
+                            <label for="visitDate">
+                                Visit Date
+                            </label>
 
                             <input type="date"
                                    id="visitDate"
@@ -193,11 +261,16 @@
                                    class="form-input"
                                    th:value="${editVisit != null ? editVisit.visitDate : ''}"
                                    required />
+
                         </div>
+
 
                         <!-- Visit Time -->
                         <div class="form-group">
-                            <label for="visitTime">Visit Time</label>
+
+                            <label for="visitTime">
+                                Visit Time
+                            </label>
 
                             <input type="time"
                                    id="visitTime"
@@ -205,177 +278,250 @@
                                    class="form-input"
                                    th:value="${editVisit != null ? editVisit.visitTime : ''}"
                                    required />
+
                         </div>
+
 
                         <!-- Notes -->
                         <div class="form-group full-width">
-                            <label for="notes">Notes</label>
+
+                            <label for="notes">
+                                Notes
+                            </label>
 
                             <textarea id="notes"
                                       name="notes"
                                       rows="4"
                                       class="form-input"
                                       th:text="${editVisit != null ? editVisit.notes : ''}">
-            </textarea>
+                            </textarea>
+
                         </div>
+
 
                     </div>
 
+
                     <div class="form-actions">
 
-                        <!-- DYNAMIC BUTTON -->
                         <button type="submit"
                                 class="btn btn-primary">
 
-            <span th:text="${editVisit != null} ?
-                    'Update Visit' :
-                    'Schedule Visit'">
-            </span>
+                            <span th:text="${editVisit != null}
+                            ? 'Update Visit'
+                            : 'Schedule Visit'">
+                            </span>
 
                         </button>
 
                     </div>
 
+
                 </form>
 
             </div>
 
+
+
             <!-- TABLE -->
+
             <div class="panel large-panel">
 
                 <div class="panel-header">
-                    <h3>View Scheduled Site Visits</h3>
+
+                    <h3>
+                        View Scheduled Site Visits
+                    </h3>
+
                 </div>
 
-                <div class="table-wrapper">
 
-                    <table>
+                <div class="download-container">
 
-                        <thead>
+                    <button onclick="window.location.href='/site-visits/download-pdf'"
+                            class="download-btn">
 
-                        <tr>
-                        <tr>
+                        <span class="download-icon">
+                            ⬇
+                        </span>
 
-                            <th>Company</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Registration Number</th>
-                            <th>Address</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Status</th>
-                            <th>Attendance</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            <th>Status Action</th>
-                            <th>Manage Visit</th>
-                        </tr>
+                        Download PDF
+
+                    </button>
+
+                </div>
 
 
-                        </thead>
 
-                        <tbody>
+                <div class="table-container">
 
-                        <tr th:each="visit : ${siteVisits}">
+                    <div class="table-wrapper">
 
-                            <td th:text="${visit.company.name}"></td>
 
-                            <td th:text="${visit.company.email}"></td>
+                        <table>
 
-                            <td th:text="${visit.company.phone}"></td>
+                            <thead>
 
-                            <td th:text="${visit.company.regNumber}"></td>
+                            <tr>
 
-                            <td th:text="${visit.company.address}"></td>
+                                <th>Company</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Registration Number</th>
+                                <th>Address</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Attendance</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Status Action</th>
+                                <th>Manage Visit</th>
 
-                            <td th:text="${visit.visitDate}"></td>
+                            </tr>
 
-                            <td th:text="${visit.visitTime}"></td>
+                            </thead>
 
-                            <td>
-                                <span class="status"
-                                      th:text="${visit.status}">
-                                </span>
-                            </td>
 
-                            <td th:id="'attendance-status-' + ${visit.id}">
-                                Loading...
-                            </td>
+                            <tbody>
 
-                            <td th:id="'checkin-time-' + ${visit.id}">
-                                -
-                            </td>
 
-                            <td th:id="'checkout-time-' + ${visit.id}">
-                                -
-                            </td>
+                            <tr th:each="visit : ${siteVisits}">
 
-                            <!-- CHECK IN / OUT -->
-                            <td>
 
-                                <div class="status-action-buttons">
+                                <td th:text="${visit.company.name}">
+                                </td>
 
-                                    <button type="button"
-                                            th:onclick="'checkIn(' + ${visit.id} + ')'"
-                                            class="btn btn-primary small-btn">
 
-                                        Check In
+                                <td th:text="${visit.company.email}">
+                                </td>
 
-                                    </button>
 
-                                    <button type="button"
-                                            th:onclick="'checkOut(' + ${visit.id} + ')'"
-                                            class="btn btn-primary small-btn">
+                                <td th:text="${visit.company.phone}">
+                                </td>
 
-                                        Check Out
 
-                                    </button>
+                                <td th:text="${visit.company.regNumber}">
+                                </td>
 
-                                </div>
 
-                            </td>
+                                <td th:text="${visit.company.address}">
+                                </td>
 
-                            <!-- EDIT + DELETE -->
-                            <td>
 
-                                <div class="status-action-buttons">
+                                <td th:text="${visit.visitDate}">
+                                </td>
 
-                                    <!-- EDIT -->
-                                    <a th:href="@{/site-visits/edit/{id}(id=${visit.id})}"
-                                       class="btn btn-primary small-btn">
 
-                                        Edit
+                                <td th:text="${visit.visitTime}">
+                                </td>
 
-                                    </a>
 
-                                    <!-- DELETE -->
-                                    <form th:action="@{/site-visits/delete/{id}(id=${visit.id})}"
-                                          method="post"
-                                          style="display:inline;">
+                                <td>
+
+                                    <span class="status"
+                                          th:text="${visit.status}">
+                                    </span>
+
+                                </td>
+
+
+                                <td th:id="'attendance-status-' + ${visit.id}">
+                                    Loading...
+                                </td>
+
+
+                                <td th:id="'checkin-time-' + ${visit.id}">
+                                    -
+                                </td>
+
+
+                                <td th:id="'checkout-time-' + ${visit.id}">
+                                    -
+                                </td>
+
+
+                                <!-- CHECK IN / OUT -->
+
+                                <td>
+
+                                    <div class="status-action-buttons">
+
 
                                         <button type="button"
-                                                class="btn btn-danger small-btn"
-                                                th:onclick="'confirmDelete(' + ${visit.id} + ')'">
+                                                th:onclick="'checkIn(' + ${visit.id} + ')'"
+                                                class="btn btn-primary small-btn">
 
-                                            Delete
+                                            Check In
 
                                         </button>
 
-                                    </form>
 
-                                </div>
+                                        <button type="button"
+                                                th:onclick="'checkOut(' + ${visit.id} + ')'"
+                                                class="btn btn-primary small-btn">
 
-                            </td>
+                                            Check Out
 
-                        </tr>
+                                        </button>
 
-                        </tbody>
 
-                    </table>
+                                    </div>
+
+                                </td>
+
+
+                                <!-- EDIT + DELETE -->
+
+                                <td>
+
+                                    <div class="status-action-buttons">
+
+
+                                        <a th:href="@{/site-visits/edit/{id}(id=${visit.id})}"
+                                           class="btn btn-primary small-btn">
+
+                                            Edit
+
+                                        </a>
+
+
+                                        <form th:action="@{/site-visits/delete/{id}(id=${visit.id})}"
+                                              method="post"
+                                              style="display:inline;">
+
+
+                                            <button type="button"
+                                                    class="btn btn-danger small-btn"
+                                                    th:onclick="'confirmDelete(' + ${visit.id} + ')'">
+
+                                                Delete
+
+                                            </button>
+
+
+                                        </form>
+
+
+                                    </div>
+
+                                </td>
+
+
+                            </tr>
+
+
+                            </tbody>
+
+
+                        </table>
+
+
+                    </div>
 
                 </div>
 
-                <!-- VIEW ALL -->
+
                 <div class="view-toggle">
 
                     <button id="toggleVisitsBtn"
@@ -387,33 +533,54 @@
 
                 </div>
 
+
             </div>
+
 
         </section>
 
+
     </div>
+
 
 </section>
 <!-- DELETE MODAL -->
-<div id="deleteModal" class="custom-modal">
+
+<div id="deleteModal"
+     class="custom-modal">
+
 
     <div class="custom-modal-content">
 
+
         <div class="custom-modal-header">
-            <h3>Delete Site Visit</h3>
+
+            <h3>
+                Delete Site Visit
+            </h3>
+
         </div>
 
+
         <div class="custom-modal-body">
+
             <p>
                 Are you sure you want to delete this site visit?
             </p>
 
+
             <p class="modal-warning">
+
                 This action cannot be undone.
+
             </p>
+
+
         </div>
 
+
         <div class="custom-modal-actions">
+
 
             <button type="button"
                     class="btn btn-secondary"
@@ -423,8 +590,11 @@
 
             </button>
 
+
+
             <form id="deleteForm"
                   method="post">
+
 
                 <button type="submit"
                         class="btn btn-danger">
@@ -433,357 +603,706 @@
 
                 </button>
 
+
             </form>
+
 
         </div>
 
+
     </div>
 
+
 </div>
+
+
+
 <script>
+
+
+    // MOBILE SIDEBAR
+
+    function toggleSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+
+        sidebar.classList.toggle("show");
+
+    }
+
+
+
+
 
     let toastTimeout;
 
+
+
     function showMessage(message, isSuccess) {
 
-        const toast = document.getElementById("toast");
+
+        const toast =
+            document.getElementById("toast");
+
 
         toast.textContent = message;
 
+
         toast.className = "toast";
+
 
         void toast.offsetWidth;
 
+
         toast.classList.add("show");
+
 
         toast.classList.add(
             isSuccess ? "success" : "error"
         );
 
+
+
         if (toastTimeout) {
+
             clearTimeout(toastTimeout);
+
         }
 
+
+
         toastTimeout = setTimeout(() => {
+
             toast.classList.remove("show");
+
         }, 4000);
+
+
     }
+
+
+
 
     function formatTime(time) {
+
         return time ? time : "-";
+
     }
 
+
+
+
+
     async function loadSelectedCompanyDetails() {
+
 
         const companyId =
             document.getElementById("companyId").value;
 
+
+
         if (!companyId) {
 
+
             document.getElementById("companyName").value = "";
+
             document.getElementById("companyEmail").value = "";
+
             document.getElementById("companyPhone").value = "";
+
             document.getElementById("companyAddress").value = "";
+
             document.getElementById("companyRegNumber").value = "";
 
+
             return;
+
         }
+
+
 
         try {
 
-            const response = await fetch(
-                `/api/companies/${companyId}`
-            );
+
+            const response =
+                await fetch(
+                    `/api/companies/${companyId}`
+                );
+
+
 
             if (!response.ok) {
-                throw new Error("Failed to fetch company");
+
+                throw new Error(
+                    "Failed to fetch company"
+                );
+
             }
 
-            const company = await response.json();
+
+
+            const company =
+                await response.json();
+
+
 
             document.getElementById("companyName").value =
                 company.name || "";
 
+
+
             document.getElementById("companyEmail").value =
                 company.email || "";
+
+
 
             document.getElementById("companyPhone").value =
                 company.phone || "";
 
+
+
             document.getElementById("companyAddress").value =
                 company.address || "";
+
+
 
             document.getElementById("companyRegNumber").value =
                 company.regNumber || "";
 
-        } catch (error) {
+
+
+        } catch(error) {
+
 
             showMessage(
                 "Failed to load company details",
                 false
             );
+
+
         }
+
+
     }
 
-    function renderAttendance(visitId, attendance) {
+
+        function renderAttendance(visitId, attendance) {
 
         const statusEl =
-            document.getElementById(
-                `attendance-status-${visitId}`
-            );
+        document.getElementById(
+        `attendance-status-${visitId}`
+        );
+
 
         const inEl =
-            document.getElementById(
-                `checkin-time-${visitId}`
-            );
+        document.getElementById(
+        `checkin-time-${visitId}`
+        );
+
 
         const outEl =
-            document.getElementById(
-                `checkout-time-${visitId}`
-            );
+        document.getElementById(
+        `checkout-time-${visitId}`
+        );
 
-        if (!statusEl || !inEl || !outEl) return;
+
+        if (!statusEl || !inEl || !outEl) {
+        return;
+    }
+
+
 
         if (!attendance) {
 
-            statusEl.textContent = "Not Started";
-            inEl.textContent = "-";
-            outEl.textContent = "-";
-
-            return;
-        }
 
         statusEl.textContent =
-            attendance.status || "Checked In";
+        "Not Started";
+
 
         inEl.textContent =
-            formatTime(attendance.checkInTime);
+        "-";
+
 
         outEl.textContent =
-            formatTime(attendance.checkOutTime);
+        "-";
+
+
+        return;
+
     }
 
-    async function checkIn(id) {
+
+
+        statusEl.textContent =
+        attendance.status || "Checked In";
+
+
+        inEl.textContent =
+        formatTime(
+        attendance.checkInTime
+        );
+
+
+        outEl.textContent =
+        formatTime(
+        attendance.checkOutTime
+        );
+
+
+    }
+
+
+
+
+
+        async function checkIn(id) {
+
 
         try {
 
-            const res = await fetch(
-                `/api/attendance/check-in/${id}`,
-                {
-                    method: "POST"
-                }
-            );
 
-            if (!res.ok) {
-                throw new Error("Check-in failed");
-            }
+        const res =
+        await fetch(
+        `/api/attendance/check-in/${id}`,
+    {
+        method:"POST"
+    }
+        );
 
-            const data = await res.json();
 
-            showMessage(
-                data.message || "Checked in successfully",
-                data.success !== false
-            );
 
-            if (data.success !== false) {
-                loadAttendance(id);
-            }
+        if (!res.ok) {
 
-        } catch (error) {
+        throw new Error(
+        "Check-in failed"
+        );
 
-            showMessage("Check-in failed", false);
-        }
     }
 
-    async function checkOut(id) {
+
+
+        const data =
+        await res.json();
+
+
+
+        showMessage(
+        data.message ||
+        "Checked in successfully",
+        data.success !== false
+        );
+
+
+
+        if (data.success !== false) {
+
+        loadAttendance(id);
+
+    }
+
+
+
+    } catch(error) {
+
+
+        showMessage(
+        "Check-in failed",
+        false
+        );
+
+
+    }
+
+
+    }
+
+
+
+
+
+        async function checkOut(id) {
+
 
         try {
 
-            const res = await fetch(
-                `/api/attendance/check-out/${id}`,
-                {
-                    method: "POST"
-                }
-            );
 
-            if (!res.ok) {
-                throw new Error("Check-out failed");
-            }
+        const res =
+        await fetch(
+        `/api/attendance/check-out/${id}`,
+    {
+        method:"POST"
+    }
+        );
 
-            const data = await res.json();
 
-            showMessage(
-                data.message || "Checked out successfully",
-                data.success !== false
-            );
 
-            if (data.success !== false) {
-                loadAttendance(id);
-            }
+        if (!res.ok) {
 
-        } catch (error) {
+        throw new Error(
+        "Check-out failed"
+        );
 
-            showMessage("Check-out failed", false);
-        }
     }
 
-    async function loadAttendance(visitId) {
+
+
+        const data =
+        await res.json();
+
+
+
+        showMessage(
+        data.message ||
+        "Checked out successfully",
+        data.success !== false
+        );
+
+
+
+        if (data.success !== false) {
+
+        loadAttendance(id);
+
+    }
+
+
+
+    } catch(error) {
+
+
+        showMessage(
+        "Check-out failed",
+        false
+        );
+
+
+    }
+
+
+    }
+
+
+
+
+
+        async function loadAttendance(visitId) {
+
 
         try {
 
-            const res = await fetch(
-                `/api/attendance/${visitId}`
-            );
 
-            if (!res.ok) {
+        const res =
+        await fetch(
+        `/api/attendance/${visitId}`
+        );
 
-                renderAttendance(visitId, null);
 
-                return;
-            }
 
-            const data = await res.json();
+        if (!res.ok) {
 
-            if (data && data.present && data.value) {
 
-                renderAttendance(visitId, data.value);
+        renderAttendance(
+        visitId,
+        null
+        );
 
-            } else if (data && data.id) {
 
-                renderAttendance(visitId, data);
+        return;
 
-            } else {
-
-                renderAttendance(visitId, null);
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Failed to load attendance",
-                error
-            );
-
-            renderAttendance(visitId, null);
-        }
     }
-    // DELETE MODAL
-    function confirmDelete(visitId) {
+
+
+
+        const data =
+        await res.json();
+
+
+
+        if (data &&
+        data.present &&
+        data.value) {
+
+
+
+        renderAttendance(
+        visitId,
+        data.value
+        );
+
+
+
+    } else if (data && data.id) {
+
+
+
+        renderAttendance(
+        visitId,
+        data
+        );
+
+
+
+    } else {
+
+
+        renderAttendance(
+        visitId,
+        null
+        );
+
+
+    }
+
+
+
+    } catch(error) {
+
+
+        console.error(
+        "Failed to load attendance",
+        error
+        );
+
+
+
+        renderAttendance(
+        visitId,
+        null
+        );
+
+
+    }
+
+
+    }
+
+
+
+
+
+        // DELETE MODAL
+
+
+        function confirmDelete(visitId) {
+
 
         const modal =
-            document.getElementById("deleteModal");
+        document.getElementById(
+        "deleteModal"
+        );
+
 
         const deleteForm =
-            document.getElementById("deleteForm");
+        document.getElementById(
+        "deleteForm"
+        );
+
+
 
         deleteForm.action =
-            `/site-visits/delete/${visitId}`;
+        `/site-visits/delete/${visitId}`;
 
-        modal.style.display = "flex";
+
+
+        modal.style.display =
+        "flex";
+
+
     }
 
-    function closeDeleteModal() {
+
+
+
+
+        function closeDeleteModal() {
+
 
         document.getElementById(
             "deleteModal"
-        ).style.display = "none";
+        ).style.display =
+            "none";
+
+
     }
 
-    // CLOSE WHEN CLICK OUTSIDE
-    window.onclick = function(event) {
+
+
+
+
+        window.onclick =
+        function(event) {
+
 
         const modal =
-            document.getElementById("deleteModal");
+        document.getElementById(
+        "deleteModal"
+        );
+
+
 
         if (event.target === modal) {
-            closeDeleteModal();
-        }
+
+        closeDeleteModal();
+
     }
-    document.addEventListener(
+
+
+    }
+
+
+
+
+
+        document.addEventListener(
         "DOMContentLoaded",
         function () {
 
-            // COMPANY DETAILS
-            const companySelect =
-                document.getElementById("companyId");
 
-            if (companySelect) {
+        const companySelect =
+        document.getElementById(
+        "companyId"
+        );
 
-                companySelect.addEventListener(
-                    "change",
-                    loadSelectedCompanyDetails
-                );
-            }
 
-            // LOAD ATTENDANCE
-            document.querySelectorAll(
-                "[id^='attendance-status-']"
-            ).forEach(el => {
 
-                const id =
-                    el.id.replace(
-                        "attendance-status-",
-                        ""
-                    );
+        if (companySelect) {
 
-                loadAttendance(id);
-            });
 
-            // VIEW ALL / VIEW LESS
-            const rows =
-                document.querySelectorAll("tbody tr");
+        companySelect.addEventListener(
+        "change",
+        loadSelectedCompanyDetails
+        );
 
-            const toggleBtn =
-                document.getElementById(
-                    "toggleVisitsBtn"
-                );
 
-            let expanded = false;
+    }
 
-            const visibleCount = 5;
 
-            function updateRows() {
 
-                rows.forEach((row, index) => {
 
-                    if (
-                        !expanded &&
-                        index >= visibleCount
-                    ) {
-                        row.style.display = "none";
-                    } else {
-                        row.style.display = "";
-                    }
-                });
 
-                toggleBtn.textContent =
-                    expanded
-                        ? "View Less"
-                        : "View All";
-            }
+        document.querySelectorAll(
+        "[id^='attendance-status-']"
+        ).forEach(el => {
 
-            // HIDE BUTTON
-            if (rows.length <= visibleCount) {
-                toggleBtn.style.display = "none";
-            }
 
-            // TOGGLE
-            toggleBtn.addEventListener(
-                "click",
-                function () {
 
-                    expanded = !expanded;
+        const id =
+        el.id.replace(
+        "attendance-status-",
+        ""
+        );
 
-                    updateRows();
-                }
-            );
 
-            // INITIAL
-            updateRows();
-        }
-    );
 
+        loadAttendance(id);
+
+
+
+    });
+
+
+
+
+
+        const rows =
+        document.querySelectorAll(
+        "tbody tr"
+        );
+
+
+
+        const toggleBtn =
+        document.getElementById(
+        "toggleVisitsBtn"
+        );
+
+
+
+        let expanded = false;
+
+
+
+        const visibleCount = 5;
+
+
+
+
+        function updateRows() {
+
+
+        rows.forEach(
+        (row,index)=>{
+
+
+        if (
+        !expanded &&
+        index >= visibleCount
+        ) {
+
+
+        row.style.display =
+        "none";
+
+
+    } else {
+
+
+        row.style.display =
+        "";
+
+
+    }
+
+
+    }
+        );
+
+
+
+        if(toggleBtn){
+
+        toggleBtn.textContent =
+        expanded
+        ? "View Less"
+        : "View All";
+
+    }
+
+
+    }
+
+
+
+
+
+        if(toggleBtn){
+
+
+        if(rows.length <= visibleCount){
+
+        toggleBtn.style.display =
+        "none";
+
+    }
+
+
+
+        toggleBtn.addEventListener(
+        "click",
+        function(){
+
+
+        expanded =
+        !expanded;
+        updateRows();
+    }
+        );
+    }
+        updateRows();
+    }
+        );
 </script>
-
 </body>
 </html>

@@ -1109,3 +1109,82 @@ table td:last-child {
         transform: translateY(0) scale(1);
     }
 }
+/* MOBILE RESPONSIVENESS */
+
+html, body {
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+
+    .dashboard-shell {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .dashboard-content {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .dashboard-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .topbar-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    .profile-card {
+        width: 100%;
+    }
+
+    .quick-actions button {
+        width: 100%;
+    }
+
+    .sidebar-links a {
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+}
