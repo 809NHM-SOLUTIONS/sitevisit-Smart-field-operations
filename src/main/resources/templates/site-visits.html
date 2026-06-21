@@ -721,74 +721,34 @@
 
         });
     }
-
-
-
-
-
-    let toastTimeout;
-
-
-
-    function showMessage(message, isSuccess) {
-
-
-        const toast =
+ let toastTimeout;
+ function showMessage(message, isSuccess) {
+  const toast =
             document.getElementById("toast");
-
-
         toast.textContent = message;
-
-
         toast.className = "toast";
-
-
         void toast.offsetWidth;
-
-
-        toast.classList.add("show");
-
-
-        toast.classList.add(
+       toast.classList.add("show");
+       toast.classList.add(
             isSuccess ? "success" : "error"
         );
-
-
-
-        if (toastTimeout) {
+       if (toastTimeout) {
 
             clearTimeout(toastTimeout);
 
         }
-
-
-
-        toastTimeout = setTimeout(() => {
+  toastTimeout = setTimeout(() => {
 
             toast.classList.remove("show");
 
         }, 4000);
-
-
     }
-
-
-
-
-    function formatTime(time) {
+function formatTime(time) {
 
         return time ? time : "-";
-
     }
-
-
-
-
-
-    async function loadSelectedCompanyDetails() {
-
-
-        const companyId =
+ async function loadSelectedCompanyDetails() {
+ const companyId =
             document.getElementById("companyId").value;
 
         if (!companyId) {
@@ -830,14 +790,9 @@
             document.getElementById("companyName").value =
                 company.name || "";
 
-
-
             document.getElementById("companyEmail").value =
                 company.email || "";
-
-
-
-            document.getElementById("companyPhone").value =
+          document.getElementById("companyPhone").value =
                 company.phone || "";
             document.getElementById("companyAddress").value =
                 company.address || "";
@@ -939,30 +894,18 @@
         );
 
     }
-
-
-
         const data =
         await res.json();
-
-
-
         showMessage(
         data.message ||
         "Checked in successfully",
         data.success !== false
         );
-
-
-
-        if (data.success !== false) {
+            if (data.success !== false) {
 
         loadAttendance(id);
 
     }
-
-
-
     } catch(error) {
 
 
@@ -1328,31 +1271,15 @@
         : "View All";
 
     }
-
-
     }
-
-
-
-
-
         if(toggleBtn){
-
-
         if(rows.length <= visibleCount){
-
         toggleBtn.style.display =
         "none";
-
     }
-
-
-
         toggleBtn.addEventListener(
         "click",
         function(){
-
-
         expanded =
         !expanded;
         updateRows();

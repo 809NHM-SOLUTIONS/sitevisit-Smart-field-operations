@@ -35,7 +35,16 @@
     height: 44px;
 }
 
-/* Responsive */
+/* PAYMENT REMINDER GRID */
+
+.notifications-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 24px;
+}
+
+/* MOBILE */
+
 @media (max-width: 768px) {
 
     .notification-filter-grid {
@@ -51,6 +60,48 @@
     }
 
     .filter-reset-group button {
+        width: 100%;
+    }
+
+    .notifications-grid {
+        display: block;
+    }
+
+    .notifications-grid .panel {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-content {
+        padding: 70px 15px 15px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 700px;
+    }
+
+    #paymentReminderForm {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #saveReminderBtn,
+    #cancelEditBtn {
+        width: 100%;
+    }
+
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .panel-header button {
         width: 100%;
     }
 }

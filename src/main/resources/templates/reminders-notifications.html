@@ -10,7 +10,7 @@
 
 <section class="dashboard-section">
     <div class="dashboard-shell">
-
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="sidebar-logo">
@@ -149,8 +149,7 @@
             </div>
 
             <!-- PAYMENT REMINDER SECTION -->
-            <div class="dashboard-grid" style="grid-template-columns: 1fr 1.3fr; gap: 24px;">
-
+            <div class="notifications-grid">
                 <div class="panel">
                     <div class="panel-header">
                         <h3>Monthly Payment Reminder</h3>
@@ -252,6 +251,30 @@
 <script src="/js/payment-reminders.js"></script>
 <script src="/js/notifications.js"></script>
 <script src="/js/site-visit-reminders.js"></script>
+<script>
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('show');
+    }
 
+    document.addEventListener('click', function (event) {
+
+        const sidebar = document.querySelector('.sidebar');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+
+        if (
+            sidebar.classList.contains('show') &&
+            !sidebar.contains(event.target) &&
+            !menuBtn.contains(event.target)
+        ) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+    document.querySelectorAll('.sidebar a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.remove('show');
+        });
+    });
+</script>
 </body>
 </html>

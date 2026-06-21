@@ -20,6 +20,7 @@
     <div class="dashboard-shell">
 
         <aside class="sidebar">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
             <div class="sidebar-brand">
                 <div class="sidebar-logo">
                     <img src="/images/siteVisit%20logo.png" alt="SiteVisit Logo" class="actual-logo" />
@@ -179,5 +180,37 @@
 
 </script>
 <script src="/js/notifications.js"></script>
+<script>
+    function showMessage(message) {
+        alert(message);
+    }
+
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('show');
+    }
+
+    document.addEventListener('click', function (event) {
+
+        const sidebar = document.querySelector('.sidebar');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+
+        if (
+            sidebar.classList.contains('show') &&
+            !sidebar.contains(event.target) &&
+            !menuBtn.contains(event.target)
+        ) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+    document.querySelectorAll('.sidebar a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.remove('show');
+        });
+    });
+</script>
+
+<script src="/js/notifications.js"></script>
 </body>
 </html>
+

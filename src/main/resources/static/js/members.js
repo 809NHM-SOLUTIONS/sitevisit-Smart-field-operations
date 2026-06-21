@@ -243,3 +243,27 @@ function escapeHtml(value) {
     document.getElementById("saveMemberBtn").style.background = "";
     document.getElementById("saveMemberBtn").style.color = "";
 }
+
+    function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('show');
+}
+
+    document.addEventListener('click', function (event) {
+
+    const sidebar = document.querySelector('.sidebar');
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+
+    if (
+    sidebar.classList.contains('show') &&
+    !sidebar.contains(event.target) &&
+    !menuBtn.contains(event.target)
+    ) {
+    sidebar.classList.remove('show');
+}
+});
+
+    document.querySelectorAll('.sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('.sidebar').classList.remove('show');
+    });
+});

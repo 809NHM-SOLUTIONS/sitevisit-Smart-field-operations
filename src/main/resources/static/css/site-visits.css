@@ -1162,16 +1162,46 @@ tbody tr:hover {
         flex-direction: column;
         gap: 8px;
     }
-
     .sidebar-links a {
         font-size: 14px;
         padding: 12px;
         text-align: left;
     }
-
     .mobile-menu-btn {
         font-size: 20px;
         padding: 10px 14px;
     }
+}
+/* FIX TABLE CUTTING OFF */
 
+.dashboard-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-wrapper table {
+    min-width: 1800px;
+    border-collapse: collapse;
+}
+
+th:last-child,
+td:last-child {
+    min-width: 220px;
+}
+
+.status-action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
 }
